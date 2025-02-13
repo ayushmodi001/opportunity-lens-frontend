@@ -76,6 +76,7 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --border: 240 3.7% 25%;
   }
 }
 @layer base {

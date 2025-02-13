@@ -1,10 +1,14 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Globe, Facebook, Twitter, Instagram } from "lucide-react"
+import { Globe, Facebook, Twitter, Instagram, Router } from "lucide-react"
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Image from "next/image"
+import { useRouter } from "next/navigation";
+
 
 export default function LandingPage() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
@@ -16,7 +20,7 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <Button size="sm" className="bg-primary hover:bg-primary/90">
+            <Button size="sm" className="bg-primary hover:bg-primary/90" onClick = {()=>router.push('/login')}>
               Get Started
             </Button>
           </div>
