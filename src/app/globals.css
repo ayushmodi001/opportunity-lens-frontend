@@ -5,7 +5,7 @@
 /* Global Defaults */
 body {
   margin: 0;
-  padding: 1.5%;
+  /* padding: 1.5%; */
   /* box-sizing: border-box; */
   font-family: 'Inter', sans-serif; /* You can change this */
 }
