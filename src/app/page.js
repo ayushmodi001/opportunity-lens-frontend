@@ -5,7 +5,7 @@ import { Globe, Facebook, Twitter, Instagram, Router } from "lucide-react"
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Image from "next/image"
 import { useRouter } from "next/navigation";
-
+import { Avatar } from "@/components/ui/avatar";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function LandingPage() {
             Empowering You to Explore, Learn, and Grow with Precision.
             </h1>
             <p className="text-lg text-muted-foreground">
-            A smarter way to unlock new opportunities and enhance your potential.n
+            A smarter way to unlock new opportunities and enhance your potential.
             </p>
           </div>
         </div>
@@ -68,20 +68,14 @@ export default function LandingPage() {
       {/* Testimonials Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">What Our Customers Say</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">What Our Users Say about us</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[1, 2, 3].map((item) => (
               <Card key={item} className="p-6">
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-muted overflow-hidden">
-                      <Image
-                        src="/placeholder.svg"
-                        alt="Avatar"
-                        width={48}
-                        height={48}
-                        className="w-full h-full object-cover"
-                      />
+                      <Avatar/>
                     </div>
                     <div>
                       <h3 className="font-semibold">John Doe</h3>
@@ -89,7 +83,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <p className="text-muted-foreground">
-                    "This platform has revolutionized how we manage our business. Highly recommended!"
+                    "This platform has revolutionized identifiying your inner talent. Highly recommended!"
                   </p>
                 </div>
               </Card>
@@ -135,7 +129,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t mt-12 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 All rights reserved.</p>
+            <p>&copy; 2025 All rights reserved.</p>
           </div>
         </div>
       </footer>
