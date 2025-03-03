@@ -7,11 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {doSocialLogin} from "@/app/actions";
 
 export function SgForm({ className, ...props }) {
+
+  const router = useRouter()
   // Add loading state
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -23,17 +25,57 @@ export function SgForm({ className, ...props }) {
     }
   };
 
+  async function handleSubmit(event) {
+    event.preventDefault();
+    try {
+      const formData = new FormData(event.currentTarget)
+
+      const Username = formData.get('Username')
+      const email = formData.get('email')
+      const password = formData.get('password')
+      const cpassword = formData.get('cpassword')
+
+      const response = await fetch(`api/register`,{
+        method : "POST",
+        headers : {
+          "content-type" : "application/json",
+        },
+        body : JSON.stringify({
+          Username,
+          email,
+          password,
+          cpassword
+        })
+      })
+
+      response.status === 201 && router.push('/login')
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="p-6 md:p-8 flex flex-col gap-6">
-            <form className="flex flex-col gap-6">
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome</h1>
                 <p className="text-balance text-muted-foreground">
                   Create your account
                 </p>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="Username">Username</Label>
+                <Input 
+                  id="Username" 
+                  type="text" 
+                  name="Username" 
+                  placeholder="Enter your Username" 
+                  required 
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>

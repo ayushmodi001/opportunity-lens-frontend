@@ -11,3 +11,16 @@ export  async function doSocialLogin(formData) {
 export async function doLogout(){
     await signOut ({redirectTo : "/"})
 }
+
+export async function doCredLogin(formData){
+    try {
+        const response = await signIn("credentials", {
+            email : formData.get('email'),
+            password : formData.get('password'),
+            redirect : false
+        })
+        return response;
+    } catch (error) {
+        console.log(error)
+    }
+}

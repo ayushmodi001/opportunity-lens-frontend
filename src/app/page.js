@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Image from "next/image"
 import { useRouter } from "next/navigation";
 import { Avatar } from "@/components/ui/avatar";
-
+import BlurIn  from "@/components/animTxt";
 export default function LandingPage() {
   const router = useRouter();
   return (
@@ -31,9 +31,9 @@ export default function LandingPage() {
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center space-y-8">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+            <BlurIn>
             Empowering You to Explore, Learn, and Grow with Precision.
-            </h1>
+            </BlurIn>
             <p className="text-lg text-muted-foreground">
             A smarter way to unlock new opportunities and enhance your potential.
             </p>

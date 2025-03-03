@@ -19,7 +19,7 @@ export function ThemeToggle() {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 hidden sm:flex">
       <Sun className="h-4 w-4" />
       <Switch
         checked={theme === "dark"}

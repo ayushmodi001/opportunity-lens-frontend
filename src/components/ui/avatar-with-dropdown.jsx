@@ -14,18 +14,21 @@ import { auth } from "@/auth"
 import { doLogout } from "@/app/actions"
 import Image from "next/image"
 
-export async function AvatarWithDropdown() {
+export async function AvatarWithDropdown({userImage}) {
+  
+  
   const session = await auth()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="cursor-pointer">
+        <Avatar className="cursor-pointer h-8 w-8">
           <Image
-            src={session?.user?.image}
-            alt={session?.user?.name}
-            height={75}
-            width={75}
+            src={userImage}
+            alt="user-avatar"
+            height={40}
+            width={40}
           />
+          {userImage && <img src={userImage} alt="User Avatar" />}
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">

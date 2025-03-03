@@ -8,10 +8,31 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
-import { doSocialLogin } from "@/app/actions"
+import { doSocialLogin } from "../app/actions/index";
+import { doCredLogin } from "@/app/actions"
 
 export function LoginForm({ className, ...props }) {
+  const router = useRouter()
+  async function handleFormSubmit(event){
+      event.preventDefault()
+      try{
+        const formData = new FormData(event.currentTarget)
+        const response = await doCredLogin(formData)
+
+        if (!!response.error) {
+          
+        }else{
+          router.push("/dashboard")
+        }
+      }catch(e) {
+        console.error(e)
+      }
+  }
+
+
+
   const [showPassword, setShowPassword] = useState(false)
 
   const togglePassword = () => {
@@ -31,10 +52,10 @@ export function LoginForm({ className, ...props }) {
             </div>
 
             {/* Email/Password Login Form */}
-            <form className="flex flex-col gap-6">
+            <form className="flex flex-col gap-6" onSubmit={handleFormSubmit}>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="Enter your email" required />
+                <Input id="email" type="email" name="email" placeholder="Enter your email" required />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center justify-between">
@@ -55,6 +76,7 @@ export function LoginForm({ className, ...props }) {
                 </div>
                 <Input 
                   id="password" 
+                  name = "password"
                   type={showPassword ? "text" : "password"} 
                   placeholder="Enter Password" 
                   required 
