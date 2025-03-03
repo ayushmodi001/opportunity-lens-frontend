@@ -8,6 +8,7 @@ import ShinyButton from "@/components/ui/shinyButton"
 import Image from "next/image"
 import TypingEffect from "@/components/ui/typingEffect"
 
+
 export async function Dashboard(){
     const session = await auth()
 
@@ -60,8 +61,11 @@ export async function Dashboard(){
                 </div>
             </div>
         </div>
-        <div className="border-2 border-solid rounded-2xl m-2 p-1">
+        <div className="flex flex-col gap-3 border-2 border-solid rounded-2xl m-2 p-1">
             <TypingEffect text="Statistics" className="text-center sm:text-4xl font-bold md:text-4xl tracking-normal"/>
+            <div className="border-2 border-solid rounded-2xl p-2 m-1">
+                
+            </div>
         </div>
         </>
     )

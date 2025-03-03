@@ -7,20 +7,45 @@ export const POST = async (request) => {
   try {
     const { Username, email, password, cpassword } = await request.json();
     console.log(Username, email, password, cpassword);
-    
-    // Validate password confirmation
+
+    // ✅ Immediately respond to client to prevent timeout
+    const response = new NextResponse(
+      JSON.stringify({ message: "Processing registration..." }),
+      {
+        status: 202, // ✅ Non-blocking response
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    // ✅ Process registration in the background
+    registerUser(Username, email, password, cpassword);
+
+    return response;
+  } catch (error) {
+    console.error("Registration error:", error);
+    return new NextResponse(
+      JSON.stringify({
+        message: "Registration failed",
+        error: error.message || "Unknown error",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+};
+
+// Background registration function (does NOT block API response)
+const registerUser = async (Username, email, password, cpassword) => {
+  try {
     if (password !== cpassword) {
-      return new NextResponse(
-        JSON.stringify({ message: "Passwords do not match" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" }
-        }
-      );
+      console.log("Passwords do not match");
+      return;
     }
 
-    // Create DB Connection
-    // await dbConnect();
+    // Connect to DB
+    await dbConnect();
 
     // Encrypt the Password
     const hashedPassword = await bcrypt.hash(password, 5);
@@ -29,30 +54,13 @@ export const POST = async (request) => {
     const newUser = {
       Username,
       password: hashedPassword,
-      email
+      email,
     };
 
     // Update the DB
     await createUser(newUser);
-
-    return new NextResponse(
-      JSON.stringify({ message: "User has been created" }),
-      {
-        status: 201,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
+    console.log("User has been created:", email);
   } catch (error) {
-    console.error("Registration error:", error);
-    return new NextResponse(
-      JSON.stringify({ 
-        message: "Registration failed", 
-        error: error.message || "Unknown error" 
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
+    console.error("Background registration error:", error);
   }
 };
