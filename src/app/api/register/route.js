@@ -20,7 +20,7 @@ export const POST = async (request) => {
     }
 
     // Create DB Connection
-    await dbConnect();
+    // await dbConnect();
 
     // Encrypt the Password
     const hashedPassword = await bcrypt.hash(password, 5);

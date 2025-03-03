@@ -19,7 +19,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  // const connection = await dbConnect();
+  const connection = await dbConnect();
   // console.log(connection)
   return (
     <html lang="en" suppressHydrationWarning>
