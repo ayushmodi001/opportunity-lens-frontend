@@ -2,7 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import {ThemeProvider} from '../providers/theme-provider';
 import { dbConnect } from "@/lib/mongo";
 import './globals.css';
-import { Toaster } from "@/components/ui/toaster";
+import { Icon, icons } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Opportunity Lens",
   description: "Will Provide Later on",
+  icons:{
+    icon : "/logo.svg"
+  }
 };
 
 export default async function RootLayout({ children }) {
@@ -27,7 +30,6 @@ export default async function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
           {children}
-        <Toaster/>
         </ThemeProvider>
       </body>
     </html>
