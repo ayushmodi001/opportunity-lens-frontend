@@ -9,9 +9,9 @@ import { Label } from "@/components/ui/label"
 import { Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-
 import { doSocialLogin } from "../app/actions/index";
 import { doCredLogin } from "@/app/actions"
+import Image from "next/image"
 
 export function LoginForm({ className, ...props }) {
   const router = useRouter()
@@ -113,10 +113,12 @@ export function LoginForm({ className, ...props }) {
             </div>
           </div>
           <div className="bg-muted flex">
-            <img
+            <Image
               src="signupOl.svg"
               alt="Image"
               className=""
+              width={500}
+              height={100}
             />
           </div>
         </CardContent>

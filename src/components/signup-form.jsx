@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {doSocialLogin} from "@/app/actions";
+import Image from "next/image";
 
 export function SgForm({ className, ...props }) {
 
@@ -168,7 +169,7 @@ export function SgForm({ className, ...props }) {
             </div>
           </div>
           <div className="bg-muted flex">
-            <img src="loginOl.svg" alt="Image" />
+            <Image src="loginOl.svg" alt="Image" width={500} height={500}/>
           </div>
         </CardContent>
       </Card>
