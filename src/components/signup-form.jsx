@@ -169,7 +169,7 @@ export function SgForm({ className, ...props }) {
             </div>
           </div>
           <div className="bg-muted flex">
-            <Image src="loginOl.svg" alt="Image" width={500} height={500}/>
+            <Image src="/loginOl.svg" alt="Image" width={500} height={500} unoptimized/>
           </div>
         </CardContent>
       </Card>

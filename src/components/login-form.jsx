@@ -114,7 +114,7 @@ export function LoginForm({ className, ...props }) {
           </div>
           <div className="bg-muted flex">
             <Image
-              src="signupOl.svg"
+              src="/signupOl.svg"
               alt="Image"
               className=""
               width={500}
