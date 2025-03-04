@@ -28,7 +28,7 @@ export async function dbConnect() {
 
     //Check for already connected state 
     if (mongoose.connection.readyState >= 1) {
-        console.log("Already connected to MongoDB");
+        console.log("Already connected");
         return;
       }
 
