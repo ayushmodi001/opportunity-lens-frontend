@@ -1,7 +1,7 @@
 {
     "regions": ["bom1"],
     "functions": {
-        "api/*": {
+        "api/register": {
           "maxDuration": 30
         }
       }
