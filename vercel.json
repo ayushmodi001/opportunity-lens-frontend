@@ -22,7 +22,7 @@
     "builds": [
       {
         "src": "next.config.js",
-        "use": "@vercel/nex"
+        "use": "@vercel/next"
       }
     ]
   }
