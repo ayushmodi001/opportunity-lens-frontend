@@ -6,11 +6,11 @@
       },
       "src/app/api/auth/**/*.{js,ts}": {
         "maxDuration": 30,
-        "memory": 3008
+        "memory": 512
       },
       "src/app/(auth|dashboard)/**/*.{js,ts}": {
         "maxDuration": 30,
-        "memory": 3008
+        "memory": 512
       }
     },
     "routes": [
