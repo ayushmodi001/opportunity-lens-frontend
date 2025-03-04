@@ -45,7 +45,7 @@ const registerUser = async (Username, email, password, cpassword) => {
     }
 
     // Connect to DB
-    await dbConnect();
+    // await dbConnect();
 
     // Encrypt the Password
     const hashedPassword = await bcrypt.hash(password, 5);
