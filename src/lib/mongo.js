@@ -26,6 +26,12 @@ export async function dbConnect() {
     // Optional: Log successful connection
     console.log('MongoDB connected successfully');
 
+    //Check for already connected state 
+    if (mongoose.connection.readyState >= 1) {
+        console.log("Already connected to MongoDB");
+        return;
+      }
+
     return connection;
   } catch (error) {
     console.error('MongoDB connection error:', error);
