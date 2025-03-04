@@ -18,11 +18,5 @@
         "src": "/api/(.*)",
         "dest": "src/app/api/$1"
       }
-    ],
-    "builds": [
-      {
-        "src": "next.config.js",
-        "use": "@vercel/next"
-      }
     ]
   }
