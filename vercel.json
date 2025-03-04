@@ -1,9 +1,4 @@
 {
-    "regions": ["bom1"],
-    "functions": {
-        "app/api/register/route.js": {
-          "maxDuration": 30
-        }
-      }
+    "regions": ["bom1"]
 }
   
