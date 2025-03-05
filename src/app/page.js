@@ -7,6 +7,9 @@ import Image from "next/image"
 import { useRouter } from "next/navigation";
 import { Avatar } from "@/components/ui/avatar";
 import BlurIn  from "@/components/animTxt";
+import PieChart1 from "@/components/Charts/pchart1";
+import { Pc2 } from "@/components/Charts/piechart2";
+import { Bchart1 } from "@/components/Charts/barChart1";
 export default function LandingPage() {
   const router = useRouter();
   return (
@@ -45,22 +48,9 @@ export default function LandingPage() {
       <section className="py-16 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { value: "85%", label: "Customer Satisfaction" },
-              { value: "95%", label: "Growth Rate" },
-              { value: "90%", label: "User Retention" },
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="relative w-32 h-32 mx-auto mb-4">
-                  <div className="absolute inset-0 border-4 border-primary/20 rounded-full" />
-                  <div className="absolute inset-1 border-4 border-primary rounded-full border-t-transparent transform -rotate-90" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-primary">{stat.value}</span>
-                  </div>
-                </div>
-                <p className="text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
+              <PieChart1/>
+              <Pc2/>
+              <Bchart1/>
           </div>
         </div>
       </section>
