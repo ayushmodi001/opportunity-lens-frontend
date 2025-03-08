@@ -49,8 +49,8 @@ export default function LandingPage() {
       <h2 className="text-2xl md:text-3xl font-bold text-center">Statistics</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-4">
               <PieChart1/>
-              <Pc2/>
               <Bchart1/>
+              <Pc2/>
           </div>
       </section>
 
