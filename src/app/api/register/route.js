@@ -9,16 +9,16 @@ export const POST = async (request) => {
     const { Username, email, password, cpassword } = await request.json();
     console.log(Username, email, password, cpassword);
 
-    // ✅ Immediately respond to client to prevent timeout
+    //Immediately respond to client to prevent timeout
     const response = new NextResponse(
       JSON.stringify({ message: "Processing registration..." }),
       {
-        status: 202, // ✅ Non-blocking response
+        status: 202, // Non-blocking response
         headers: { "Content-Type": "application/json" },
       }
     );
 
-    // ✅ Process registration in the background
+    // Process registration in the background
     registerUser(Username, email, password, cpassword);
 
     return response;
