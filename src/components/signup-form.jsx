@@ -169,7 +169,17 @@ export function SgForm({ className, ...props }) {
             </div>
           </div>
           <div className="bg-muted flex">
-            <Image src="/loginOl.svg" alt="Image" width={500} height={500} unoptimized/>
+            <Image 
+              src="/loginOl.svg" 
+              alt="Login Image" 
+              width={500} 
+              height={500} 
+              priority
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/loginOL.svg'; // Provide a fallback image
+              }}
+            />
           </div>
         </CardContent>
       </Card>
