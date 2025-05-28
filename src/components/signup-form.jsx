@@ -177,7 +177,7 @@ export function SgForm({ className, ...props }) {
               priority
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = '/loginOL.svg'; // Provide a fallback image
+                e.target.src = '/loginOL.svg'; 
               }}
             />
           </div>
