@@ -18,7 +18,7 @@ export default function LandingPage() {
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src="/logo.svg" alt="logo" />
+            <Image src="/logo.svg" alt="logo" width={24} height={24} />
             <span className="font-semibold">Opportunity Lens</span>
           </div>
           <div className="flex items-center gap-4">
@@ -78,7 +78,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <p className="text-muted-foreground">
-                    "This platform has revolutionized identifiying your inner talent. Highly recommended!"
+                    This platform has revolutionized identifiying your inner talent. Highly recommended!
                   </p>
                 </div>
               </Card>
@@ -93,7 +93,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img src="/logo.svg" alt="logo" />
+                <Image src="/logo.svg" alt="logo" width={24} height={24} />
                 <span className="font-semibold">Opportunity Lens</span>
               </div>
               <p className="text-sm text-muted-foreground">Making business management simple and efficient</p>
