@@ -2,6 +2,7 @@ import { AvatarWithDropdown } from "./ui/avatar-with-dropdown"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 import StaggeredFade from "./an3"
 import BlurIn from "./animTxt"
 import ShinyButton from "@/components/ui/shinyButton"
@@ -57,7 +58,9 @@ export async function Dashboard(){
                     <BlurIn className="text-[#34D1BF]">Let's Test Your Knowldge</BlurIn>
                 </div>
                 <div>
-                    <ShinyButton className="rounded-xl">Click Here!</ShinyButton>
+                    <Link href="/test">
+                        <ShinyButton className="rounded-xl">Click Here!</ShinyButton>
+                    </Link>
                 </div>
             </div>
         </div>
