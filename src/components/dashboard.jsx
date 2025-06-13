@@ -13,7 +13,7 @@ import TypingEffect from "@/components/ui/typingEffect"
 export async function Dashboard(){
     const session = await auth()
 
-    if(!session?.user) redirect("/")
+    if(!session?.user) redirect("/unauthorized")
 
         const userImage = session?.user?.image && session.user.image.trim() !== "" ? session.user.image  : "/Avatar21.svg"; 
 
