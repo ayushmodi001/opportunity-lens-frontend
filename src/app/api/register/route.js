@@ -13,7 +13,7 @@ export const POST = async (request) => {
     const response = new NextResponse(
       JSON.stringify({ message: "Processing registration..." }),
       {
-        status: 202, // Non-blocking response
+        status: 201, // Non-blocking response
         headers: { "Content-Type": "application/json" },
       }
     );
