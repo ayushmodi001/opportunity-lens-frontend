@@ -1,4 +1,4 @@
-// "use client"
+"use client"
 
 import { Avatar } from "@/components/ui/avatar"
 import {
@@ -10,25 +10,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { User, LogOut } from "lucide-react"
-import { auth } from "@/auth"
-import { doLogout } from "@/app/actions"
+import { signOut } from "next-auth/react"
 import Image from "next/image"
 
-export async function AvatarWithDropdown({userImage}) {
-  
-  
-  const session = await auth()
+export function AvatarWithDropdown({ userImage }) {
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/login" })
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer h-8 w-8">
-          <Image
-            src={userImage}
-            alt="user-avatar"
-            height={40}
-            width={40}
-          />
-          {userImage && <img src={userImage} alt="User Avatar" />}
+          <Image src={userImage} alt="user-avatar" height={40} width={40} />
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
@@ -38,11 +32,9 @@ export async function AvatarWithDropdown({userImage}) {
           <User className="mr-2 h-4 w-4" />
           <span>View Profile</span>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
-          <form action={doLogout}>
-            <button type="submit">Logout</button>
-          </form>
+          <span>Logout</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

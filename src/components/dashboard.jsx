@@ -8,6 +8,7 @@ import BlurIn from "./animTxt"
 import ShinyButton from "@/components/ui/shinyButton"
 import Image from "next/image"
 import TypingEffect from "@/components/ui/typingEffect"
+import { QuizStats } from "./Charts/quizStats"
 
 
 export async function Dashboard(){
@@ -55,7 +56,7 @@ export async function Dashboard(){
             </div>
             <div className="flex flex-col gap-5">
                 <div className="text-wrap">
-                    <BlurIn className="text-[#34D1BF]">Let's Test Your Knowldge</BlurIn>
+                    <BlurIn className="text-[#34D1BF]">Let's Test Your Knowledge</BlurIn>
                 </div>
                 <div>
                     <Link href="/test">
@@ -64,11 +65,9 @@ export async function Dashboard(){
                 </div>
             </div>
         </div>
-        <div className="flex flex-col gap-3 border-2 border-solid rounded-2xl m-2 p-1">
-            <TypingEffect text="Statistics" className="text-center sm:text-4xl font-bold md:text-4xl tracking-normal"/>
-            <div className="border-2 border-solid rounded-2xl p-2 m-1">
-                
-            </div>
+        <div className="flex flex-col gap-3 border-2 border-solid rounded-2xl m-2 p-4">
+            <TypingEffect text="Statistics" className="text-center sm:text-4xl font-bold md:text-4xl tracking-normal mb-4"/>
+            <QuizStats />
         </div>
         </>
     )
