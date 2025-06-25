@@ -50,33 +50,63 @@ export async function Dashboard(){
                     </nav>
                 </header>
 
-                <main className="space-y-6">
-                    {/* Welcome Section with Quick Stats */}
-                    <div className="grid md:grid-cols-3 gap-6">
-                        <div className="md:col-span-2 p-8 rounded-xl bg-gradient-to-r from-background via-card to-background border border-border/40 shadow-sm">
-                            <div className="flex flex-col gap-2">
-                                <div className="flex items-center gap-3">
-                                    <BlurIn className="text-2xl md:text-4xl font-bold">Welcome back,</BlurIn>
-                                    <StaggeredFade text={userName} className="text-2xl md:text-4xl text-[#D1345B] font-bold"/>
+                <main className="space-y-6">                    {/* Welcome Section with Quick Stats */}                    <div className="relative overflow-hidden rounded-xl border border-border/40 shadow-sm bg-gradient-to-br from-[#D1345B]/5 via-background to-[#34D1BF]/5">
+                        <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,rgba(255,255,255,0.5),transparent)]" />
+                        <div className="relative p-6 sm:p-8">
+                            <div className="flex flex-col md:flex-row items-start justify-between gap-8">
+                                {/* Welcome Text */}
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <BlurIn className="text-2xl md:text-3xl lg:text-4xl font-bold">
+                                                Welcome back,
+                                            </BlurIn>
+                                            <StaggeredFade 
+                                                text={userName} 
+                                                className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#D1345B]"
+                                            />
+                                        </div>
+                                        <p className="text-muted-foreground text-sm md:text-base max-w-2xl">
+                                            Track your progress, take assessments, and improve your skills. Your learning journey continues here.
+                                        </p>
+                                    </div>
                                 </div>
-                                <p className="text-muted-foreground text-sm md:text-base">
-                                    Continue your learning journey and improve your skills
-                                </p>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-1 gap-4">
-                            <div className="p-6 rounded-xl bg-[#D1345B]/10 border border-[#D1345B]/20 shadow-sm">
-                                <div className="flex flex-col">
-                                    <span className="text-sm text-muted-foreground">Total Assessments</span>
-                                    <span className="text-2xl font-bold text-[#D1345B]">5</span>
-                                    <span className="text-xs text-[#D1345B]/70 mt-1">+2 this week</span>
-                                </div>
-                            </div>
-                            <div className="p-6 rounded-xl bg-[#34D1BF]/10 border border-[#34D1BF]/20 shadow-sm">
-                                <div className="flex flex-col">
-                                    <span className="text-sm text-muted-foreground">Average Score</span>
-                                    <span className="text-2xl font-bold text-[#34D1BF]">78%</span>
-                                    <span className="text-xs text-[#34D1BF]/70 mt-1">↑ 5% improvement</span>
+
+                                {/* Quick Stats */}
+                                <div className="w-full md:w-auto flex flex-col sm:flex-row gap-4">
+                                    <div className="group flex-1 p-4 rounded-xl bg-card hover:bg-accent transition-colors border border-border/40">
+                                        <div className="flex items-start gap-4">
+                                            <div className="p-2 rounded-lg bg-[#D1345B]/10 text-[#D1345B] group-hover:bg-[#D1345B]/20 transition-colors">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M12 20v-6M6 20V10M18 20V4"/>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-muted-foreground font-medium">Assessments</p>
+                                                <div className="flex items-baseline gap-1">
+                                                    <span className="text-2xl font-bold">5</span>
+                                                    <span className="text-xs text-[#D1345B]">+2 this week</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="group flex-1 p-4 rounded-xl bg-card hover:bg-accent transition-colors border border-border/40">
+                                        <div className="flex items-start gap-4">
+                                            <div className="p-2 rounded-lg bg-[#34D1BF]/10 text-[#34D1BF] group-hover:bg-[#34D1BF]/20 transition-colors">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="m12 8-9.04 9.06a2.82 2.82 0 1 0 3.98 3.98L16 12"/>
+                                                    <circle cx="17" cy="7" r="5"/>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-muted-foreground font-medium">Average Score</p>
+                                                <div className="flex items-baseline gap-1">
+                                                    <span className="text-2xl font-bold">78%</span>
+                                                    <span className="text-xs text-[#34D1BF]">↑ 5%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
