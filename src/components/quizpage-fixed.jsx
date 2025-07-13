@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import Image from "next/image";
 
 // Chart components
 const ChartContainer = ({ children, className, config }) => <div className={`w-full ${className || ""}`}>{children}</div>;
@@ -98,61 +99,50 @@ export default function Quizpage() {
     setMounted(true);
   }, []);
 
-  // Submit quiz callback
-  const handleSubmitQuiz = useCallback(async () => {
-    try {
-      setQuizCompleted(true);
-      setEndTime(new Date());
-      
-      // Exit fullscreen safely
-      if (document.fullscreenElement && document.exitFullscreen) {
-        await document.exitFullscreen();
-      }
-    } catch (err) {
-      console.error("Error submitting quiz:", err);
-      // Continue with submission even if exit fullscreen fails
-    }
-  }, []);
-
   // Fullscreen logic
   const enterFullscreen = useCallback(async () => {
     try {
-      // Check if component is mounted and browser APIs are available
       if (!mounted || typeof document === 'undefined') {
         return;
       }
 
-      // Check if fullscreen is supported
       if (!document.documentElement.requestFullscreen) {
         console.warn("Fullscreen API not supported");
         return;
       }
 
-      // Check if already in fullscreen
       if (document.fullscreenElement) {
         return;
       }
 
-      // Request fullscreen with proper error handling
       await document.documentElement.requestFullscreen();
     } catch (err) {
       console.error("Error attempting to enable fullscreen:", err);
-      // Don't throw error, just log it to prevent app crash
     }
   }, [mounted]);
 
+  const handleSubmitQuiz = useCallback(async () => {
+    try {
+      setQuizCompleted(true);
+      setEndTime(new Date());
+      
+      if (document.fullscreenElement && document.exitFullscreen) {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      console.error("Error submitting quiz:", err);
+    }
+  }, []);
+
   useEffect(() => {
-    // Only add event listeners after component is mounted
     if (!mounted) return;
 
     const handleFullscreenChange = () => {
       try {
-        // Only process if quiz is active
         if (!quizStarted || quizCompleted) {
           return;
         }
 
-        // Check if we've exited fullscreen
         if (!document.fullscreenElement) {
           setViolations((prev) => prev + 1);
           setShowViolationWarning(true);
@@ -161,7 +151,6 @@ export default function Quizpage() {
             setShowViolationWarning(false);
           }, 3000);
 
-          // Attempt to re-enter fullscreen
           enterFullscreen();
         }
       } catch (err) {
@@ -202,7 +191,6 @@ export default function Quizpage() {
       await enterFullscreen();
     } catch (err) {
       console.error("Error starting quiz:", err);
-      // Continue with quiz even if fullscreen fails
     }
   };
 
@@ -299,12 +287,18 @@ export default function Quizpage() {
   if (!quizStarted) {
     return (
       <div className="min-h-screen bg-background">
-        {/* Theme toggle in top-right corner */}
-        <div className="fixed top-4 right-4 z-50">
-          <ThemeToggle />
-        </div>
+        {/* Header with logo and theme toggle */}
+        <header className="border-b border-border">
+          <div className="flex justify-between items-center p-6 max-w-6xl mx-auto">
+            <div className="flex items-center gap-3">
+              <Image src="/logo.svg" alt="Opportunity Lens" width={32} height={32} />
+              <h1 className="text-xl font-bold text-foreground">Opportunity Lens</h1>
+            </div>
+            <ThemeToggle />
+          </div>
+        </header>
 
-        <div className="flex items-center justify-center p-4 min-h-screen">
+        <div className="flex items-center justify-center p-4 min-h-[calc(100vh-80px)]">
           <Card className="w-full max-w-md shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold text-foreground">Quiz Challenge</CardTitle>
@@ -348,12 +342,18 @@ export default function Quizpage() {
   if (quizCompleted && results) {
     return (
       <div className="min-h-screen bg-background">
-        {/* Theme toggle in top-right corner */}
-        <div className="fixed top-4 right-4 z-50">
-          <ThemeToggle />
-        </div>
+        {/* Header with logo and theme toggle */}
+        <header className="border-b border-border">
+          <div className="flex justify-between items-center p-6 max-w-6xl mx-auto">
+            <div className="flex items-center gap-3">
+              <Image src="/logo.svg" alt="Opportunity Lens" width={32} height={32} />
+              <h1 className="text-xl font-bold text-foreground">Opportunity Lens</h1>
+            </div>
+            <ThemeToggle />
+          </div>
+        </header>
 
-        <div className="p-4 pt-16">
+        <div className="p-4">
           <div className="w-full max-w-7xl mx-auto space-y-6">
             <Card className="shadow-lg">
               <CardHeader className="text-center bg-primary text-primary-foreground rounded-t-lg">
@@ -362,13 +362,13 @@ export default function Quizpage() {
               </CardHeader>
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-                  <Card className="border-2 border-border hover:shadow-md transition-shadow">
+                  <Card className="border-2 border-green-500/20 hover:shadow-md transition-shadow">
                     <CardContent className="p-4 text-center">
                       <div className="text-3xl font-bold text-green-600">{results.correctAnswers}</div>
                       <div className="text-sm text-muted-foreground font-medium">Correct</div>
                     </CardContent>
                   </Card>
-                  <Card className="border-2 border-border hover:shadow-md transition-shadow">
+                  <Card className="border-2 border-red-500/20 hover:shadow-md transition-shadow">
                     <CardContent className="p-4 text-center">
                       <div className="text-3xl font-bold text-red-600">{results.wrongAnswers}</div>
                       <div className="text-sm text-muted-foreground font-medium">Wrong</div>
@@ -380,13 +380,13 @@ export default function Quizpage() {
                       <div className="text-sm text-muted-foreground font-medium">Final Score</div>
                     </CardContent>
                   </Card>
-                  <Card className="border-2 border-border hover:shadow-md transition-shadow">
+                  <Card className="border-2 border-chart-3/20 hover:shadow-md transition-shadow">
                     <CardContent className="p-4 text-center">
-                      <div className="text-3xl font-bold text-primary">{formatTime(results.timeTaken)}</div>
+                      <div className="text-3xl font-bold" style={{ color: "hsl(var(--chart-3))" }}>{formatTime(results.timeTaken)}</div>
                       <div className="text-sm text-muted-foreground font-medium">Time Taken</div>
                     </CardContent>
                   </Card>
-                  <Card className={`border-2 hover:shadow-md transition-shadow ${results.violations > 0 ? "border-destructive/20 bg-destructive/5" : "border-green-200 bg-green-50 dark:bg-green-950/20"}`}>
+                  <Card className={`border-2 hover:shadow-md transition-shadow ${results.violations > 0 ? "border-destructive/20 bg-destructive/5" : "border-green-500/20 bg-green-50 dark:bg-green-950/20"}`}>
                     <CardContent className="p-4 text-center">
                       <div className={`text-3xl font-bold ${results.violations > 0 ? "text-destructive" : "text-green-600"}`}>
                         {results.violations}
@@ -395,7 +395,7 @@ export default function Quizpage() {
                     </CardContent>
                   </Card>
                 </div>
-                
+
                 {/* Score Breakdown */}
                 <Card className="mb-6 border-2 border-border">
                   <CardHeader className="bg-muted">
@@ -424,7 +424,7 @@ export default function Quizpage() {
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <Card className="border-2 border-border hover:shadow-lg transition-shadow">
                     <CardHeader className="bg-primary text-primary-foreground">
@@ -459,7 +459,7 @@ export default function Quizpage() {
                       </ChartContainer>
                     </CardContent>
                   </Card>
-                  
+
                   <Card className="border-2 border-border hover:shadow-lg transition-shadow">
                     <CardHeader className="bg-secondary text-secondary-foreground">
                       <CardTitle className="text-lg">Time Usage (Minutes)</CardTitle>
@@ -483,7 +483,7 @@ export default function Quizpage() {
                       </ChartContainer>
                     </CardContent>
                   </Card>
-                  
+
                   <Card className="border-2 border-border hover:shadow-lg transition-shadow">
                     <CardHeader className="bg-accent text-accent-foreground">
                       <CardTitle className="text-lg">Score Impact</CardTitle>
@@ -508,7 +508,7 @@ export default function Quizpage() {
                     </CardContent>
                   </Card>
                 </div>
-                
+
                 <div className="mt-8">
                   <h3 className="text-xl font-bold text-foreground mb-6">Question Review</h3>
                   <div className="space-y-4">
@@ -559,7 +559,7 @@ export default function Quizpage() {
                     })}
                   </div>
                 </div>
-                
+
                 <div className="mt-8 text-center">
                   <Button 
                     onClick={() => {
@@ -598,6 +598,17 @@ export default function Quizpage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header with logo and theme toggle */}
+      <header className="border-b border-border">
+        <div className="flex justify-between items-center p-6 max-w-6xl mx-auto">
+          <div className="flex items-center gap-3">
+            <Image src="/logo.svg" alt="Opportunity Lens" width={32} height={32} />
+            <h1 className="text-xl font-bold text-foreground">Opportunity Lens</h1>
+          </div>
+          <ThemeToggle />
+        </div>
+      </header>
+
       <div className="p-4">
         {/* Violation Warning */}
         {showViolationWarning && (
@@ -643,10 +654,7 @@ export default function Quizpage() {
             )}
           </div>
           
-          <div className="flex items-center gap-3">
-            {/* Theme toggle */}
-            <ThemeToggle />
-            
+          <div className="flex items-center gap-2">
             {/* Submit button */}
             <Button
               onClick={handleSubmitQuiz}
@@ -664,7 +672,7 @@ export default function Quizpage() {
             </Button>
           </div>
         </div>
-        
+
         {/* Main Content */}
         <div className="w-full px-6 pt-24 pb-8 space-y-8">
           {/* Question Card */}

@@ -87,7 +87,7 @@ export function TestPage({ userImage, userName }) {
                     <BlurIn className="md:text-[35px] font-extrabold">Assessment Center</BlurIn>
                 </div>
                 <div>
-                    <StaggeredFade text={userName} className="md:text-[35px] text-[#D1345B] font-extrabold"/>
+                    <StaggeredFade text={userName} className="md:text-[35px] text-primary font-extrabold"/>
                 </div>
             </div>
 
@@ -117,7 +117,7 @@ export function TestPage({ userImage, userName }) {
                                         id="subject"
                                         value={selectedSubject}
                                         onChange={(e) => setSelectedSubject(e.target.value)}
-                                        className="w-full p-3 rounded-lg border-2 border-input bg-background hover:border-[#D1345B] transition-colors"
+                                        className="w-full p-3 rounded-lg border-2 border-input bg-background hover:border-primary transition-colors"
                                     >
                                         <option value="">Choose a subject...</option>
                                         {subjects.map((subject) => (
@@ -136,8 +136,8 @@ export function TestPage({ userImage, userName }) {
                                                 onClick={() => setSelectedLevel(index)}
                                                 className={`w-full py-6 border-2 transition-all ${
                                                     index === selectedLevel 
-                                                        ? 'border-[#D1345B] text-[#D1345B]' 
-                                                        : 'hover:border-[#D1345B] hover:text-[#D1345B]'
+                                                        ? 'border-primary text-primary bg-primary/10' 
+                                                        : 'hover:border-primary hover:text-primary'
                                                 }`}
                                             >
                                                 {level}
@@ -149,10 +149,10 @@ export function TestPage({ userImage, userName }) {
                                 <ShinyButton 
                                     onClick={handleStartAssessment}
                                     disabled={isLoading || !selectedSubject}
-                                    className={`w-full py-6 text-white transition-all ${
+                                    className={`w-full py-6 text-primary-foreground transition-all ${
                                         !selectedSubject 
-                                            ? 'bg-gray-400 cursor-not-allowed' 
-                                            : 'bg-[#D1345B] hover:bg-[#D1345B]/90'
+                                            ? 'bg-muted cursor-not-allowed' 
+                                            : 'bg-primary hover:bg-primary/90'
                                     }`}
                                 >
                                     {isLoading ? 'Preparing Test...' : 'Start Assessment'}
@@ -165,11 +165,11 @@ export function TestPage({ userImage, userName }) {
 
             {/* Loading Clock - Only shown when isLoading is true */}
             {isLoading && (
-                <div className="fixed bottom-8 left-8 flex items-center gap-3 bg-background/80 backdrop-blur-sm p-4 rounded-full shadow-lg border border-[#D1345B]/20">
+                <div className="fixed bottom-8 left-8 flex items-center gap-3 bg-background/80 backdrop-blur-sm p-4 rounded-full shadow-lg border border-primary/20">
                     <div className="relative w-6 h-6">
-                        <div className="absolute w-6 h-6 rounded-full border-4 border-[#D1345B] border-t-transparent animate-spin"></div>
+                        <div className="absolute w-6 h-6 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
                     </div>
-                    <span className="text-sm font-medium text-[#D1345B]">Preparing your test...</span>
+                    <span className="text-sm font-medium text-primary">Preparing your test...</span>
                     <span className="text-xs text-muted-foreground">(~70s)</span>
                 </div>
             )}
