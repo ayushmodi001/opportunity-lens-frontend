@@ -2,6 +2,7 @@
 
 import { TrendingUp } from "lucide-react"
 import { Pie, PieChart } from "recharts"
+import { useEffect, useState } from "react"
 
 import {
   Card,
@@ -52,6 +53,32 @@ const chartConfig = {
 } 
 
 export default function PieChart1() {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <Card className="flex flex-col">
+        <CardHeader className="items-center pb-0">
+          <CardTitle>Aspirants</CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 pb-0">
+          <div className="mx-auto aspect-square max-h-[250px] pb-0 flex items-center justify-center">
+            <div className="text-muted-foreground">Loading chart...</div>
+          </div>
+        </CardContent>
+        <CardFooter className="flex-col gap-2 text-sm">
+          <div className="leading-none text-muted-foreground">
+            Total Users Polished Their Carrer
+          </div>
+        </CardFooter>
+      </Card>
+    )
+  }
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">

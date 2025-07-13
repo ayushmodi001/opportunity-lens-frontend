@@ -1,9 +1,10 @@
 'use client';
 import { cn } from '@/lib/utils';
 import { motion, useInView } from 'framer-motion';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 const StaggeredFade = ({ text, className = '' }) => {
+  const [mounted, setMounted] = useState(false);
   const variants = {
     hidden: { opacity: 0 },
     show: (i) => ({
@@ -16,6 +17,21 @@ const StaggeredFade = ({ text, className = '' }) => {
   const letters = text.split('');
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <h2 className={cn(
+        'text-lg tracking-tight font-bold',
+        className
+      )}>
+        {text}
+      </h2>
+    );
+  }
 
   return (
     <motion.h2

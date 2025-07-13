@@ -1,14 +1,27 @@
 'use client';
 import { motion, useInView } from 'framer-motion';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 const TextFade = ({ direction, children, className = '', staggerChildren = 0.1 }) => {
+  const [mounted, setMounted] = useState(false);
   const FADE_DOWN = {
     show: { opacity: 1, y: 0, transition: { type: 'spring' } },
     hidden: { opacity: 0, y: direction === 'down' ? -18 : 18 },
   };
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className={className}>
+        {children}
+      </div>
+    );
+  }
   return (
     <motion.div
       ref={ref}
