@@ -10,8 +10,14 @@ import StaggeredFade from "./an3"
 import ShinyButton from "@/components/ui/shinyButton"
 import Image from "next/image"
 import Link from "next/link"
+import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
 
-export function TestPage({ userImage, userName }) {
+export async function TestPage({ userImage, userName }) {
+      const session = await auth()
+    if (session?.user) {
+        redirect('/unauthorized')
+    }
     const [isLoading, setIsLoading] = useState(false);
     const [selectedSubject, setSelectedSubject] = useState("");
     const [selectedLevel, setSelectedLevel] = useState(0);

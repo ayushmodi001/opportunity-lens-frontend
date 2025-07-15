@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import Image from "next/image";
 
 // Chart components
 const ChartContainer = ({ children, className, config }) => <div className={`w-full ${className || ""}`}>{children}</div>;
@@ -299,12 +300,18 @@ export default function Quizpage() {
   if (!quizStarted) {
     return (
       <div className="min-h-screen bg-background">
-        {/* Theme toggle in top-right corner */}
-        <div className="fixed top-4 right-4 z-50">
-          <ThemeToggle />
-        </div>
+        {/* Header with logo and theme toggle */}
+        <header className="border-b border-border">
+          <div className="flex justify-between items-center p-6 max-w-6xl mx-auto">
+            <div className="flex items-center gap-3">
+              <Image src="/logo.svg" alt="Opportunity Lens" width={32} height={32} />
+              <h1 className="text-xl font-bold text-foreground">Opportunity Lens</h1>
+            </div>
+            <ThemeToggle />
+          </div>
+        </header>
 
-        <div className="flex items-center justify-center p-4 min-h-screen">
+        <div className="flex items-center justify-center p-4 min-h-[calc(100vh-80px)]">
           <Card className="w-full max-w-md shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold text-foreground">Quiz Challenge</CardTitle>
@@ -348,12 +355,18 @@ export default function Quizpage() {
   if (quizCompleted && results) {
     return (
       <div className="min-h-screen bg-background">
-        {/* Theme toggle in top-right corner */}
-        <div className="fixed top-4 right-4 z-50">
-          <ThemeToggle />
-        </div>
+        {/* Header with logo and theme toggle */}
+        <header className="border-b border-border">
+          <div className="flex justify-between items-center p-6 max-w-6xl mx-auto">
+            <div className="flex items-center gap-3">
+              <Image src="/logo.svg" alt="Opportunity Lens" width={32} height={32} />
+              <h1 className="text-xl font-bold text-foreground">Opportunity Lens</h1>
+            </div>
+            <ThemeToggle />
+          </div>
+        </header>
 
-        <div className="p-4 pt-16">
+        <div className="p-4">
           <div className="w-full max-w-7xl mx-auto space-y-6">
             <Card className="shadow-lg">
               <CardHeader className="text-center bg-primary text-primary-foreground rounded-t-lg">
@@ -598,6 +611,17 @@ export default function Quizpage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header with logo and theme toggle */}
+      <header className="border-b border-border">
+        <div className="flex justify-between items-center p-6 max-w-6xl mx-auto">
+          <div className="flex items-center gap-3">
+            <Image src="/logo.svg" alt="Opportunity Lens" width={32} height={32} />
+            <h1 className="text-xl font-bold text-foreground">Opportunity Lens</h1>
+          </div>
+          <ThemeToggle />
+        </div>
+      </header>
+
       <div className="p-4">
         {/* Violation Warning */}
         {showViolationWarning && (
@@ -643,10 +667,7 @@ export default function Quizpage() {
             )}
           </div>
           
-          <div className="flex items-center gap-3">
-            {/* Theme toggle */}
-            <ThemeToggle />
-            
+          <div className="flex items-center gap-2">
             {/* Submit button */}
             <Button
               onClick={handleSubmitQuiz}
@@ -736,7 +757,7 @@ export default function Quizpage() {
                   disabled={currentQuestion === quizQuestions.length - 1}
                   className="px-8 py-3 text-lg bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
+                  Next →
                 </Button>
               </div>
             </CardContent>
