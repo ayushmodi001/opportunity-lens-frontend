@@ -736,7 +736,7 @@ export default function Quizpage() {
                   disabled={currentQuestion === quizQuestions.length - 1}
                   className="px-8 py-3 text-lg bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
+                  Next →
                 </Button>
               </div>
             </CardContent>

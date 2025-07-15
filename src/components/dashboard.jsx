@@ -1,7 +1,5 @@
 import { AvatarWithDropdown } from "./ui/avatar-with-dropdown"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
-import { auth } from "@/auth"
-import { redirect } from "next/navigation"
 import Link from "next/link"
 import StaggeredFade from "./an3"
 import BlurIn from "./animTxt"
@@ -11,14 +9,10 @@ import TypingEffect from "@/components/ui/typingEffect"
 import { QuizStats } from "./Charts/quizStats"
 
 
-export async function Dashboard(){
-    const session = await auth()
+export async function Dashboard({ session }){
+    const userImage = session?.user?.image && session.user.image.trim() !== "" ? session.user.image  : "/Avatar21.svg"; 
 
-    if(!session?.user) redirect("/unauthorized")
-
-        const userImage = session?.user?.image && session.user.image.trim() !== "" ? session.user.image  : "/Avatar21.svg"; 
-
-        const userName = session?.user?.name;    return(
+    const userName = session?.user?.name;    return(
         <div className="min-h-screen bg-background">
             <div className="max-w-[1600px] mx-auto px-4 py-2">
                 {/* Header */}
