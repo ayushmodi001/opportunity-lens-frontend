@@ -15,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import ClientOnly from "../ClientOnly";
 
 // Mock data - replace with real data from your backend
 const mockQuizzes = [
@@ -113,7 +114,9 @@ export function QuizStats() {
                 <div>
                   <div className="font-medium">{quiz.topic}</div>
                   <div className="text-sm text-muted-foreground">
-                    {new Date(quiz.date).toLocaleDateString()}
+                    <ClientOnly>
+                      {new Date(quiz.date).toLocaleDateString()}
+                    </ClientOnly>
                   </div>
                 </div>
                 <div className="text-lg font-bold">
