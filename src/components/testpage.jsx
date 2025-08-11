@@ -10,15 +10,18 @@ import StaggeredFade from "./an3"
 import ShinyButton from "@/components/ui/shinyButton"
 import Image from "next/image"
 import Link from "next/link"
+import { MultiSelect } from './ui/multi-select'
+import { Checkbox } from './ui/checkbox'
 
 export function TestPage({ userImage, userName }) {
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedSubject, setSelectedSubject] = useState("");
+    const [selectedItems, setSelectedItems] = useState([]);
     const [selectedLevel, setSelectedLevel] = useState(0);
+    const [isDegreeTest, setIsDegreeTest] = useState(false);
 
     const handleStartAssessment = () => {
-        if (!selectedSubject) {
-            alert("Please select a subject first");
+        if (selectedItems.length === 0) {
+            alert(`Please select at least one ${isDegreeTest ? 'degree' : 'subject'}`);
             return;
         }
         setIsLoading(true);
@@ -27,6 +30,11 @@ export function TestPage({ userImage, userName }) {
             setIsLoading(false);
             // Handle the API response here
         }, 70000); // 70 seconds
+    };
+
+    const handleTestTypeChange = (checked) => {
+        setIsDegreeTest(checked);
+        setSelectedItems([]); // Reset selections when changing test type
     };
 
     const finalUserImage = userImage && userImage.trim() !== "" ? userImage : "/Avatar21.svg";
@@ -42,13 +50,23 @@ export function TestPage({ userImage, userName }) {
         "Machine Learning",
         "Web Development",
         "Database Management"
-    ]
+    ];
+
+    const degrees = [
+        "Bachelor's of Technology in CSE",
+        "Bachelor's of Architecture",
+        "Bachelor's of Pharmacy",
+        "Bachelor of Business Administration",
+        "Bachelor of Technology in Fashion Design"
+    ];
 
     const proficiencyLevels = [
-        "Beginner",
-        "Intermediate",
-        "Advanced"
-    ]
+        "Easy",
+        "Medium",
+        "Hard"
+    ];
+
+    const currentOptions = isDegreeTest ? degrees : subjects;
 
     return (
         <>
@@ -107,23 +125,34 @@ export function TestPage({ userImage, userName }) {
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <h2 className="text-2xl font-bold text-center">Knowledge Assessment</h2>
-                                <p className="text-muted-foreground text-center">Select a subject and your proficiency level to begin the test</p>
+                                <p className="text-muted-foreground text-center">Select your options and proficiency level to begin the test</p>
                             </div>
 
                             <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="subject" className="text-lg font-medium">Select Subject</Label>
-                                    <select 
-                                        id="subject"
-                                        value={selectedSubject}
-                                        onChange={(e) => setSelectedSubject(e.target.value)}
-                                        className="w-full p-3 rounded-lg border-2 border-input bg-background hover:border-primary transition-colors"
+                                <div className="flex items-center space-x-2 mb-4">
+                                    <Checkbox 
+                                        id="degree-test-toggle" 
+                                        checked={isDegreeTest}
+                                        onCheckedChange={handleTestTypeChange}
+                                    />
+                                    <Label 
+                                        htmlFor="degree-test-toggle"
+                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                     >
-                                        <option value="">Choose a subject...</option>
-                                        {subjects.map((subject) => (
-                                            <option key={subject} value={subject}>{subject}</option>
-                                        ))}
-                                    </select>
+                                        Tests After 10/12th Grade
+                                    </Label>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="subject" className="text-lg font-medium">
+                                        {isDegreeTest ? 'Select Degree' : 'Select Topics'}
+                                    </Label>
+                                    <MultiSelect
+                                        options={currentOptions}
+                                        selected={selectedItems}
+                                        onChange={setSelectedItems}
+                                        className="w-full"
+                                    />
                                 </div>
 
                                 <div className="space-y-3">
@@ -148,9 +177,9 @@ export function TestPage({ userImage, userName }) {
 
                                 <ShinyButton 
                                     onClick={handleStartAssessment}
-                                    disabled={isLoading || !selectedSubject}
+                                    disabled={isLoading || selectedItems.length === 0}
                                     className={`w-full py-6 text-primary-foreground transition-all ${
-                                        !selectedSubject 
+                                        selectedItems.length === 0 
                                             ? 'bg-muted cursor-not-allowed' 
                                             : 'bg-primary hover:bg-primary/90'
                                     }`}
