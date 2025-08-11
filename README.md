@@ -1,4 +1,4 @@
-# Opportunity Lens ✨
+# Opportunity Lens 🔎
 
 <p align="center">
   <img src="./public/logo.svg" alt="Opportunity Lens Logo" width="120">
