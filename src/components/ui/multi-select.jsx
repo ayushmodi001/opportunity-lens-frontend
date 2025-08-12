@@ -65,10 +65,15 @@ const MultiSelect = React.forwardRef(
                                     style={{ animation: "scaleIn 0.3s ease-in-out" }}
                                 >
                                     {item}
-                                    <button
+                                    <span
+                                        role="button"
+                                        tabIndex="0"
+                                        aria-label={`Remove ${item}`}
                                         className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                                         onKeyDown={(e) => {
-                                            if (e.key === "Enter") {
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                e.stopPropagation();
                                                 handleUnselect(item);
                                             }
                                         }}
@@ -76,10 +81,14 @@ const MultiSelect = React.forwardRef(
                                             e.preventDefault();
                                             e.stopPropagation();
                                         }}
-                                        onClick={() => handleUnselect(item)}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            handleUnselect(item);
+                                        }}
                                     >
                                         <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                                    </button>
+                                    </span>
                                 </Badge>
                             )) : "Select..."}
                         </div>
