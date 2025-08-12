@@ -40,8 +40,8 @@ export function QuizList({ quizzes }) {
                 Questions: <span className="font-medium text-primary">{quiz.questions.length}</span>
               </p>
             </div>
-            <Button className="mt-4 w-full">
-              Start Quiz
+            <Button asChild className="mt-4 w-full">
+              <Link href={`/quiz/${quiz._id}`} target="_blank" rel="noopener noreferrer">Start Quiz</Link>
             </Button>
           </CardContent>
         </Card>
