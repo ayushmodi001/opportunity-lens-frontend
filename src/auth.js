@@ -52,9 +52,11 @@ export const {
                 clientSecret : process.env.GOOGLE_CLIENT_SECRET,
 
                 authorization : {
-                    prompt : "consent",
-                    access_type : "offline",
-                    response_type : "code",
+                    params: {
+                        prompt : "consent",
+                        access_type : "offline",
+                        response_type : "code",
+                    }
                 }
             })
         ]
