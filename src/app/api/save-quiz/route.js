@@ -1,6 +1,5 @@
-import { User } from "@/model/user-model";
 import { auth } from "@/auth";
-import { dbConnect } from "@/lib/mongo";
+import { addQuizToUser } from "@/queries/users";
 
 export async function POST(request) {
     const session = await auth();
@@ -9,26 +8,29 @@ export async function POST(request) {
     }
 
     try {
-        await dbConnect();
         const { quizData } = await request.json();
-        console.log("Received quiz data:", JSON.stringify(quizData, null, 2));
-        
-        const user = await User.findOne({ email: session.user.email });
-        if (!user) {
-            return new Response(JSON.stringify({ message: "User not found" }), { status: 404 });
+        if (!quizData || !quizData.questions || !quizData.skills) {
+            return new Response(JSON.stringify({ message: "Invalid quiz data provided." }), { status: 400 });
         }
+        
+        console.log("Received quiz data for user:", session.user.email);
+        
+        const result = await addQuizToUser(session.user.email, quizData);
 
-        user.quizzes.push(quizData);
-        await user.save();
-
-        return new Response(JSON.stringify({ message: "Quiz saved successfully" }), { status: 200 });
+        return new Response(JSON.stringify({ message: result.message }), { status: 200 });
 
     } catch (error) {
-        if (error.name === 'ValidationError') {
-            console.error("Validation Error Details:", JSON.stringify(error.errors, null, 2));
-        } else {
-            console.error("Error saving quiz:", error);
+        console.error("Error in /api/save-quiz:", error);
+        
+        let errorMessage = "Internal Server Error";
+        if (error.message.includes("User not found")) {
+            return new Response(JSON.stringify({ message: "User not found." }), { status: 404 });
         }
-        return new Response(JSON.stringify({ message: "Internal Server Error" }), { status: 500 });
+        if (error.name === 'ValidationError') {
+            errorMessage = "Quiz data validation failed.";
+            console.error("Validation Error Details:", JSON.stringify(error.errors, null, 2));
+        }
+        
+        return new Response(JSON.stringify({ message: errorMessage }), { status: 500 });
     }
 }
