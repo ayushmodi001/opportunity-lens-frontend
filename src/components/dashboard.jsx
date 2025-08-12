@@ -7,10 +7,13 @@ import ShinyButton from "@/components/ui/shinyButton"
 import Image from "next/image"
 import TypingEffect from "@/components/ui/typingEffect"
 import { QuizStats } from "./Charts/quizStats"
+import { getQuizzesForUser } from "@/queries/users"
+import { QuizList } from "./quiz-list"
 
 
 export async function Dashboard({ session }){
     const userImage = session?.user?.image && session.user.image.trim() !== "" ? session.user.image  : "/Avatar21.svg"; 
+    const quizzes = await getQuizzesForUser(session.user.email);
 
     const userName = session?.user?.name;    return(
         <div className="min-h-screen bg-background">
@@ -44,7 +47,9 @@ export async function Dashboard({ session }){
                     </nav>
                 </header>
 
-                <main className="space-y-6">                    {/* Welcome Section with Quick Stats */}                    <div className="relative overflow-hidden rounded-xl border border-border/40 shadow-sm bg-gradient-to-br from-[#D1345B]/5 via-background to-[#34D1BF]/5">
+                <main className="space-y-6">
+                    {/* Welcome Section with Quick Stats */}
+                    <div className="relative overflow-hidden rounded-xl border border-border/40 shadow-sm bg-gradient-to-br from-[#D1345B]/5 via-background to-[#34D1BF]/5">
                         <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,rgba(255,255,255,0.5),transparent)]" />
                         <div className="relative p-6 sm:p-8">
                             <div className="flex flex-col md:flex-row items-start justify-between gap-8">
@@ -103,6 +108,19 @@ export async function Dashboard({ session }){
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Saved Quizzes Section */}
+                    <div className="rounded-xl bg-card border border-border/40 shadow-sm">
+                        <div className="p-6 border-b border-border/40">
+                            <h2 className="text-2xl md:text-3xl font-bold">Your Saved Quizzes</h2>
+                            <p className="text-muted-foreground mt-2">
+                                Review your past assessments or start a new one.
+                            </p>
+                        </div>
+                        <div className="p-6">
+                            <QuizList quizzes={JSON.parse(JSON.stringify(quizzes))} />
                         </div>
                     </div>
 

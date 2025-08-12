@@ -1,4 +1,16 @@
 import { User } from "@/model/user-model";
+import { dbConnect } from "@/lib/mongo";
+
+export async function getQuizzesForUser(email) {
+    try {
+        await dbConnect();
+        const user = await User.findOne({ email }).select("quizzes").lean();
+        return user ? user.quizzes : [];
+    } catch (error) {
+        console.error("Error fetching quizzes:", error);
+        return [];
+    }
+}
 
 export async function createUser(userData){
     try {
