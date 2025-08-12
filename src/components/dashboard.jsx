@@ -13,7 +13,7 @@ import { QuizList } from "./quiz-list"
 
 export async function Dashboard({ session }){
     const userImage = session?.user?.image && session.user.image.trim() !== "" ? session.user.image  : "/Avatar21.svg"; 
-    const quizzes = await getQuizzesForUser(session.user.email);
+    const quizzes = (await getQuizzesForUser(session.user.email)) || [];
 
     const userName = session?.user?.name;    return(
         <div className="min-h-screen bg-background">
