@@ -49,6 +49,8 @@ export function TestPage({ userImage, userName }) {
             for_career_clarity: isDegreeTest,
         };
 
+        console.log("Sending payload to API:", JSON.stringify(payload, null, 2));
+
         try {
             const response = await fetch('https://ayush472-opportunity-t5-model.hf.space/generate-mcq/', {
                 method: 'POST',
@@ -65,7 +67,34 @@ export function TestPage({ userImage, userName }) {
 
             const result = await response.json();
             console.log("API Response:", result);
-            alert("Assessment generated successfully! Check the console for the response.");
+
+            // Save the quiz to the database
+            const quizData = {
+                skills: payload.skills,
+                difficulty: payload.difficulty,
+                questions: result.mcqs,
+                topic_counts: result.topic_counts,
+            };
+
+            try {
+                const saveResponse = await fetch('/api/save-quiz', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ quizData }),
+                });
+
+                if (!saveResponse.ok) {
+                    throw new Error('Failed to save the quiz.');
+                }
+                
+                alert("Assessment generated and saved successfully!");
+
+            } catch (saveError) {
+                console.error("Failed to save quiz:", saveError);
+                alert(`Assessment generated but failed to save: ${saveError.message}`);
+            }
 
         } catch (error) {
             console.error("API Error:", error);
