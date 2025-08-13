@@ -22,5 +22,6 @@ export async function doCredLogin(formData){
         return response;
     } catch (error) {
         console.log(error)
+        return { error: "Invalid credentials. Please try again." };
     }
 }

@@ -20,12 +20,14 @@ export const {
         providers : [
             CredentialsProvider({
                 async authorize(credentials) {
-                    await dbConnect()
-                    if(credentials == null) return null;
+                    if (credentials == null) return null;
+                    
                     try {
-                        const user = await User.findOne({email : credentials?.email})
+                        await dbConnect();
+                        const user = await User.findOne({ email: credentials.email });
+
                         if (user) {
-                            const isMatch =  bcrypt.compare(
+                            const isMatch = await bcrypt.compare(
                                 credentials.password,
                                 user.password
                             );
@@ -35,16 +37,16 @@ export const {
                                     id: user._id,
                                     email: user.email,
                                     name: user.Username,
-                                }
-                            }else{
-                                throw new Error("Check Your Credentials")
+                                };
                             }
-                        }else{
-                            throw new Error("User Not Found")
                         }
                     } catch (error) {
-                        throw new Error(error)
+                        console.error("Authorization Error:", error);
+                        // To prevent revealing whether a user exists, we'll fall through and return null,
+                        // but you could also throw a specific error for logging if needed.
                     }
+                    
+                    return null; // Return null for any failed authentication attempt
                 }
             }),
             GoogleProvider({
