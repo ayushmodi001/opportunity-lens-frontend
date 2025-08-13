@@ -1,7 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function AchievementList({ achievements }) {
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
     if (!achievements || achievements.length === 0) {
         return (
             <Card>
@@ -24,7 +31,7 @@ export function AchievementList({ achievements }) {
                         <div className="flex-grow">
                             <p className="font-bold">{ach.quizName}</p>
                             <p className="text-sm text-muted-foreground">
-                                Scored {ach.score.toFixed(2)}% on {new Date(ach.date).toLocaleDateString()}
+                                Scored {ach.score.toFixed(2)}% on {isClient ? new Date(ach.date).toLocaleDateString() : ""}
                             </p>
                         </div>
                     </div>

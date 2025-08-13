@@ -11,6 +11,7 @@ import ShinyButton from "@/components/ui/shinyButton"
 import Image from "next/image"
 import Link from "next/link"
 import { MultiSelect } from './ui/multi-select'
+import { toast } from "sonner";
 import { Checkbox } from './ui/checkbox'
 
 export function TestPage({ userImage, userName }) {
@@ -81,17 +82,17 @@ export function TestPage({ userImage, userName }) {
             }
             
             setIsSaved(true);
-            alert("Assessment generated and saved successfully!");
+            toast.success("Assessment generated and saved successfully!");
 
         } catch (saveError) {
             console.error("Failed to save quiz:", saveError);
-            alert(`Assessment generated but failed to save: ${saveError.message}`);
+            toast.error(`Assessment generated but failed to save: ${saveError.message}`);
         }
     };
 
     const handleStartAssessment = async () => {
         if (selectedItems.length === 0) {
-            alert(`Please select at least one ${isDegreeTest ? 'degree' : 'subject'}.`);
+            toast.warning(`Please select at least one ${isDegreeTest ? 'degree' : 'subject'}.`);
             return;
         }
         
@@ -131,7 +132,7 @@ export function TestPage({ userImage, userName }) {
 
         } catch (error) {
             console.error("API Error:", error);
-            alert(`An error occurred: ${error.message}`);
+            toast.error(`An error occurred: ${error.message}`);
         } finally {
             setIsLoading(false);
         }

@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import {ThemeProvider} from '../providers/theme-provider';
 import { dbConnect } from "@/lib/mongo";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import './globals.css';
 import { Icon, icons } from "lucide-react";
 

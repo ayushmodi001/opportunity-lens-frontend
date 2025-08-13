@@ -12,19 +12,32 @@ import { Progress } from "@/components/ui/progress"
 import { BarChart, Trophy, Activity } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart as RechartsBarChart, CartesianGrid, XAxis, YAxis, Cell } from "recharts"
+import { Bar, BarChart as RechartsBarChart, CartesianGrid, XAxis, YAxis, Cell, LineChart, Line, AreaChart, Area } from "recharts"
 
 export function Dashboard({ session, availableQuizzes, recentQuizzes, achievements, totalQuizzes }) {
     const userImage = session?.user?.image && session.user.image.trim() !== "" ? session.user.image : "/Avatar21.svg";
     const userName = session?.user?.name;
 
     const chartData = recentQuizzes.map(quiz => ({
-        name: (quiz.title || "Untitled Quiz").slice(0, 15), // Shorten name for chart
+        name: (quiz.title || (quiz.skills && quiz.skills.length > 0 ? quiz.skills[0] : "Untitled Quiz")).slice(0, 15), // Shorten name for chart
         score: quiz.score,
     }));
 
     const averageScore = recentQuizzes.length > 0 
-        ? Math.round(recentQuizzes.reduce((acc, quiz) => acc + quiz.score, 0) / recentQuizzes.length)
+        ? (recentQuizzes.reduce((acc, quiz) => acc + quiz.score, 0) / recentQuizzes.length).toFixed(2)
+        : 0;
+
+    const highestScore = recentQuizzes.length > 0 
+        ? Math.max(...recentQuizzes.map(q => q.score)).toFixed(2)
+        : 0;
+    
+    const lowestScore = recentQuizzes.length > 0
+        ? Math.min(...recentQuizzes.map(q => q.score)).toFixed(2)
+        : 0;
+
+    const quizzesPassed = recentQuizzes.filter(q => q.score >= 50).length;
+    const passingRate = recentQuizzes.length > 0
+        ? ((quizzesPassed / recentQuizzes.length) * 100).toFixed(2)
         : 0;
 
     return (
@@ -103,22 +116,53 @@ export function Dashboard({ session, availableQuizzes, recentQuizzes, achievemen
                         <Card>
                             <CardHeader>
                                 <CardTitle>Performance Analytics</CardTitle>
-                                <CardDescription>Your scores from recently completed quizzes.</CardDescription>
+                                <CardDescription>Your scores from recently completed quizzes, displayed in different chart formats.</CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <div className="h-80">
+                            <CardContent className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                <div className="flex flex-col h-96">
+                                    <h3 className="text-lg font-semibold mb-2 text-center">Quiz Scores Overview</h3>
                                     <ChartContainer config={{ score: { label: "Score", color: "hsl(var(--primary))" } }}>
                                         <RechartsBarChart data={chartData} margin={{ top: 20, right: 20, bottom: 5, left: 0 }}>
                                             <CartesianGrid vertical={false} />
-                                            <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} />
-                                            <YAxis />
+                                            <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                                            <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                                             <ChartTooltip content={<ChartTooltipContent />} />
                                             <Bar dataKey="score" radius={4}>
                                                 {chartData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${index + 1}))`} />
+                                                    <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${index % 5 + 1}))`} />
                                                 ))}
                                             </Bar>
                                         </RechartsBarChart>
+                                    </ChartContainer>
+                                </div>
+                                <div className="flex flex-col h-96">
+                                    <h3 className="text-lg font-semibold mb-2 text-center">Score Progression</h3>
+                                    <ChartContainer config={{ score: { label: "Score", color: "hsl(var(--chart-2))" } }}>
+                                        <LineChart data={chartData} margin={{ top: 20, right: 20, bottom: 5, left: 0 }}>
+                                            <CartesianGrid vertical={false} />
+                                            <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}/>
+                                            <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}/>
+                                            <ChartTooltip content={<ChartTooltipContent />} />
+                                            <Line type="monotone" dataKey="score" strokeWidth={2} dot={true} stroke="hsl(var(--chart-2))" />
+                                        </LineChart>
+                                    </ChartContainer>
+                                </div>
+                                <div className="flex flex-col h-96">
+                                     <h3 className="text-lg font-semibold mb-2 text-center">Score Distribution</h3>
+                                     <ChartContainer config={{ score: { label: "Score", color: "hsl(var(--chart-3))" } }}>
+                                        <AreaChart data={chartData} margin={{ top: 20, right: 20, bottom: 5, left: 0 }}>
+                                            <CartesianGrid vertical={false} />
+                                            <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}/>
+                                            <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}/>
+                                            <ChartTooltip content={<ChartTooltipContent />} />
+                                            <defs>
+                                                <linearGradient id="fillScore" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
+                                                    <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1}/>
+                                                </linearGradient>
+                                            </defs>
+                                            <Area type="monotone" dataKey="score" fill="url(#fillScore)" stroke="hsl(var(--chart-3))" />
+                                        </AreaChart>
                                     </ChartContainer>
                                 </div>
                             </CardContent>
@@ -131,16 +175,25 @@ export function Dashboard({ session, availableQuizzes, recentQuizzes, achievemen
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5" /> Quick Stats</CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div>
-                                    <div className="flex justify-between mb-1">
-                                        <span className="text-sm font-medium">Average Score</span>
-                                        <span className="text-sm font-medium">{averageScore}%</span>
-                                    </div>
-                                    <Progress value={averageScore} />
+                            <CardContent className="grid grid-cols-2 gap-4">
+                                <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
+                                    <span className="text-2xl font-bold">{averageScore}%</span>
+                                    <span className="text-sm text-muted-foreground">Average Score</span>
                                 </div>
-                                <div>
-                                    <p className="text-sm font-medium">Quizzes Completed: {recentQuizzes.length} / {totalQuizzes + recentQuizzes.length}</p>
+                                <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
+                                    <span className="text-2xl font-bold">{highestScore}%</span>
+                                    <span className="text-sm text-muted-foreground">Highest Score</span>
+                                </div>
+                                <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
+                                    <span className="text-2xl font-bold">{lowestScore}%</span>
+                                    <span className="text-sm text-muted-foreground">Lowest Score</span>
+                                </div>
+                                <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
+                                    <span className="text-2xl font-bold">{passingRate}%</span>
+                                    <span className="text-sm text-muted-foreground">Passing Rate</span>
+                                </div>
+                                <div className="col-span-2">
+                                    <p className="text-sm font-medium text-center">Quizzes Completed: {recentQuizzes.length} / {totalQuizzes + recentQuizzes.length}</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -169,7 +222,7 @@ export function Dashboard({ session, availableQuizzes, recentQuizzes, achievemen
                                                     <BarChart className="w-4 h-4" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-medium">Completed '{quiz.title}'</p>
+                                                    <p className="text-sm font-medium">Completed '{quiz.title || (quiz.skills && quiz.skills.length > 0 ? quiz.skills[0] : "Untitled Quiz")}'</p>
                                                     <p className="text-xs text-muted-foreground">Score: {quiz.score}%</p>
                                                 </div>
                                             </div>
