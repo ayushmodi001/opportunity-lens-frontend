@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card } from './ui/card'
 import { Button } from './ui/button'
 import { Label } from './ui/label'
@@ -15,6 +16,7 @@ import { toast } from "sonner";
 import { Checkbox } from './ui/checkbox'
 
 export function TestPage({ userImage, userName }) {
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedLevel, setSelectedLevel] = useState(0);
@@ -83,6 +85,7 @@ export function TestPage({ userImage, userName }) {
             
             setIsSaved(true);
             toast.success("Assessment generated and saved successfully!");
+            router.push('/dashboard');
 
         } catch (saveError) {
             console.error("Failed to save quiz:", saveError);

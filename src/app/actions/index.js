@@ -13,17 +13,30 @@ export async function doLogout(){
     await signOut ({redirectTo : "/"})
 }
 
-export async function doCredLogin(formData){
+export async function doCredLogin(formData) {
     try {
         const response = await signIn("credentials", {
-            email : formData.get('email'),
-            password : formData.get('password'),
-            redirect : false
-        })
-        return response;
+            email: formData.get('email'),
+            password: formData.get('password'),
+            redirect: false
+        });
+
+        if (response && response.error) {
+            console.error("Login failed:", response.error);
+            // Normalize error messages for consistent frontend handling
+            const errorMessage = response.error.toString();
+            if (errorMessage.includes("CredentialsSignin")) {
+                return { error: "Invalid credentials or user not found." };
+            }
+            return { error: "An unexpected error occurred during login." };
+        }
+        
+        return response; // Success case
+
     } catch (error) {
-        console.log(error)
-        return { error: "Invalid credentials. Please try again." };
+        // This catches errors if the signIn call itself fails unexpectedly
+        console.error("Catch block error in doCredLogin:", error);
+        return { error: "An internal server error occurred." };
     }
 }
 
@@ -34,27 +47,42 @@ export async function getLearningSuggestions(skills) {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const prompt = `
-            Based on the following list of technical skills, please suggest 3-5 relevant YouTube videos that can help someone improve in these areas. The user is weak in these topics: ${skills.join(', ')}.
+            You are an expert course recommender. Your goal is to provide high-quality, relevant online courses for a user looking to improve their technical skills.
 
-            For each video, provide the following information in a clear JSON format:
-            - Title
-            - A direct link to the video
-            - The name of the YouTube channel
-            - A direct link to the video thumbnail image
+            The user is weak in these topics: **${skills.join(', ')}**.
 
-            Return ONLY a valid JSON array of objects, with no other text or explanations. Each object in the array should represent a single video and have the keys: "title", "link", "channel", and "thumbnail".
-            Example format:
+            Find 3-4 courses for them, following these strict rules:
+
+            **CRITICAL INSTRUCTIONS:**
+            1.  **RELEVANCE IS KEY:** The course content must be directly relevant to the listed skills.
+            2.  **VERIFY LINKS:** Ensure every course link is currently active and leads to the course landing page.
+            3.  **DIVERSE PLATFORMS:** Suggest courses from reputable platforms like Udemy, Coursera, freeCodeCamp, Pluralsight, or official documentation tutorials.
+
+            **OUTPUT FORMAT:**
+            - You MUST return **ONLY** a valid JSON array of objects.
+            - NO other text, explanations, or markdown.
+            - Each object MUST contain these keys: "title", "link", "platform", and "description".
+
+            Example of a perfect, verified response:
+            \`\`\`json
             [
               {
-                "title": "Full React Course 2024",
-                "link": "https://www.youtube.com/watch?v=...",
-                "channel": "FreeCodeCamp",
-                "thumbnail": "https://i.ytimg.com/vi/.../hqdefault.jpg"
+                "title": "The Complete 2024 Web Development Bootcamp",
+                "link": "https://www.udemy.com/course/the-complete-web-development-bootcamp/",
+                "platform": "Udemy",
+                "description": "A comprehensive course covering HTML, CSS, Javascript, Node, React, MongoDB, and more."
+              },
+              {
+                "title": "Google Data Analytics Professional Certificate",
+                "link": "https://www.coursera.org/professional-certificates/google-data-analytics",
+                "platform": "Coursera",
+                "description": "Gain an immersive understanding of the practices and processes used by a junior or associate data analyst in their day-to-day job."
               }
             ]
+            \`\`\`
         `;
 
         const result = await model.generateContent(prompt);

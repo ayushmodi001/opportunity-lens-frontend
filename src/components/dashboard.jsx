@@ -150,6 +150,8 @@ export function Dashboard({ session, availableQuizzes, recentQuizzes, achievemen
                             </TabsContent>
                         </Tabs>
 
+                        <AIAssistant quizzes={recentQuizzes} />
+
                         <Card>
                             <CardHeader>
                                 <CardTitle>Performance Analytics</CardTitle>
@@ -201,112 +203,52 @@ export function Dashboard({ session, availableQuizzes, recentQuizzes, achievemen
                                 </div>
                             </CardContent>
                         </Card>
+                    </div>
 
-                        {/* Achievements and Recent Activity for Mobile */}
-                        <div className="lg:hidden space-y-4 md:space-y-8">
+                    {/* Sidebar */}
+                    <div className="lg:col-span-1 space-y-4 md:space-y-8">
+                        {/* Quick Stats - Desktop Only */}
+                        <div className="hidden lg:block">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><Trophy className="w-5 h-5 text-yellow-500" /> Achievements</CardTitle>
+                                    <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5" /> Quick Stats</CardTitle>
                                 </CardHeader>
-                                <CardContent>
-                                    <ScrollArea className="h-48">
-                                        <AchievementList achievements={achievements} />
-                                    </ScrollArea>
-                                </CardContent>
-                            </Card>
-
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><Activity className="w-5 h-5" /> Recent Activity</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <ScrollArea className="h-48">
-                                        <div className="space-y-4">
-                                            {uniqueRecentQuizzes.slice(0, 5).map((quiz) => (
-                                                <div key={quiz._id} className="flex items-center gap-4">
-                                                    <div className="p-2 bg-muted rounded-full">
-                                                        <BarChart className="w-4 h-4" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm font-medium">Completed '{quiz.title || (quiz.skills && quiz.skills.length > 0 ? quiz.skills[0] : "Untitled Quiz")}'</p>
-                                                        <p className="text-xs text-muted-foreground">Score: {Number(quiz.score).toFixed(2)}%</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </ScrollArea>
+                                <CardContent className="grid grid-cols-2 gap-4">
+                                    <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
+                                        <span className="text-2xl font-bold">{averageScore}%</span>
+                                        <span className="text-sm text-muted-foreground text-center">Average Score</span>
+                                    </div>
+                                    <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
+                                        <span className="text-2xl font-bold">{highestScore}%</span>
+                                        <span className="text-sm text-muted-foreground text-center">Highest Score</span>
+                                    </div>
+                                    <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
+                                        <span className="text-2xl font-bold">{lowestScore}%</span>
+                                        <span className="text-sm text-muted-foreground text-center">Lowest Score</span>
+                                    </div>
+                                    <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
+                                        <span className="text-2xl font-bold">{passingRate}%</span>
+                                        <span className="text-sm text-muted-foreground text-center">Passing Rate</span>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <p className="text-sm font-medium text-center">Quizzes Completed: {recentQuizzes.length} / {totalQuizzes + recentQuizzes.length}</p>
+                                        <Progress value={(recentQuizzes.length / (totalQuizzes + recentQuizzes.length)) * 100} className="mt-2" />
+                                    </div>
                                 </CardContent>
                             </Card>
                         </div>
-                    </div>
-
-                    {/* Sidebar Area */}
-                    <div className="hidden lg:block space-y-4 md:space-y-8">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5" /> Quick Stats</CardTitle>
-                            </CardHeader>
-                            <CardContent className="grid grid-cols-2 sm:grid-cols-2 gap-4">
-                                <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
-                                    <span className="text-xl md:text-2xl font-bold">{averageScore}%</span>
-                                    <span className="text-xs md:text-sm text-muted-foreground text-center">Average Score</span>
-                                </div>
-                                <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
-                                    <span className="text-xl md:text-2xl font-bold">{highestScore}%</span>
-                                    <span className="text-xs md:text-sm text-muted-foreground text-center">Highest Score</span>
-                                </div>
-                                <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
-                                    <span className="text-xl md:text-2xl font-bold">{lowestScore}%</span>
-                                    <span className="text-xs md:text-sm text-muted-foreground text-center">Lowest Score</span>
-                                </div>
-                                <div className="flex flex-col items-center justify-center p-4 bg-secondary rounded-lg">
-                                    <span className="text-xl md:text-2xl font-bold">{passingRate}%</span>
-                                    <span className="text-xs md:text-sm text-muted-foreground text-center">Passing Rate</span>
-                                </div>
-                                <div className="col-span-2">
-                                    <p className="text-sm font-medium text-center">Quizzes Completed: {recentQuizzes.length} / {totalQuizzes + recentQuizzes.length}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <AIAssistant quizzes={recentQuizzes} />
 
                         <Card>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><Trophy className="w-5 h-5 text-yellow-500" /> Achievements</CardTitle>
+                                <CardTitle className="flex items-center gap-2"><Trophy className="w-5 h-5" /> Achievements</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <ScrollArea className="h-48">
-                                    <AchievementList achievements={achievements} />
-                                </ScrollArea>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><Activity className="w-5 h-5" /> Recent Activity</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <ScrollArea className="h-48">
-                                    <div className="space-y-4">
-                                        {uniqueRecentQuizzes.slice(0, 5).map((quiz) => (
-                                            <div key={quiz._id} className="flex items-center gap-4">
-                                                <div className="p-2 bg-muted rounded-full">
-                                                    <BarChart className="w-4 h-4" />
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm font-medium">Completed '{quiz.title || (quiz.skills && quiz.skills.length > 0 ? quiz.skills[0] : "Untitled Quiz")}'</p>
-                                                    <p className="text-xs text-muted-foreground">Score: {Number(quiz.score).toFixed(2)}%</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </ScrollArea>
+                                <AchievementList achievements={achievements} />
                             </CardContent>
                         </Card>
                     </div>
                 </main>
             </div>
         </div>
-    )
+    );
 }

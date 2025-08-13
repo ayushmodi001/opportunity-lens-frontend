@@ -12,40 +12,35 @@ import { useRouter } from "next/navigation"
 import { doSocialLogin } from "../app/actions/index";
 import { doCredLogin } from "@/app/actions"
 import Image from "next/image"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 
 export function LoginForm({ className, ...props }) {
   const router = useRouter()
-  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   
-  async function handleFormSubmit(event){
-      event.preventDefault()
-      setIsLoading(true)
-      try{
-        const formData = new FormData(event.currentTarget)
-        const response = await doCredLogin(formData)
+  async function handleFormSubmit(event) {
+    event.preventDefault()
+    setIsLoading(true)
+    try {
+      const formData = new FormData(event.currentTarget)
+      const response = await doCredLogin(formData)
 
-        if (!!response.error) {
-          setIsLoading(false)
-          toast({
-            title: "Login Failed",
-            description: response.error || "Invalid credentials. Please try again.",
-            variant: "destructive",
-          })
-        }else{
-          // Redirect immediately and show toast on dashboard
-          router.push("/dashboard?login=success")
-        }
-      }catch(e) {
-        console.error(e)
-        setIsLoading(false)
-        toast({
-          title: "Login Failed",
-          description: "An error occurred during login. Please try again.",
-          variant: "destructive",
+      if (response?.error) {
+        toast.error("Login Failed", {
+          description: response.error,
         })
+      } else {
+        router.push("/dashboard")
       }
+
+    } catch (e) {
+      console.error(e)
+      toast.error("Error", {
+        description: "Oops! Something went wrong during login.",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
 

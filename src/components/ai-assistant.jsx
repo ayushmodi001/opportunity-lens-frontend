@@ -7,7 +7,7 @@ import { Sparkles } from 'lucide-react';
 import { getLearningSuggestions } from '@/app/actions';
 import Link from 'next/link';
 
-export function AIAssistant({ quizzes }) {
+export function AIAssistant({ quizzes = [] }) {
     const [suggestions, setSuggestions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -36,36 +36,33 @@ export function AIAssistant({ quizzes }) {
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-primary" />
-                    AI Learning Assistant
-                </CardTitle>
-                <CardDescription>
-                    Get personalized YouTube video suggestions to improve in your weak areas.
-                </CardDescription>
+            <CardHeader className="flex flex-row items-start justify-between gap-4">
+                <div>
+                    <CardTitle className="flex items-center gap-2">
+                        <Sparkles className="w-5 h-5 text-primary" />
+                        AI Learning Assistant
+                    </CardTitle>
+                    <CardDescription className="mt-2">
+                        Personalized course recommendations to improve weak areas.
+                    </CardDescription>
+                </div>
+                {weakSkills.length > 0 && (
+                    <Button onClick={handleGetSuggestions} disabled={isLoading} size="sm" className="flex-shrink-0">
+                        {isLoading ? 'Analyzing...' : 'Get Suggestions'}
+                    </Button>
+                )}
             </CardHeader>
             <CardContent>
-                {weakSkills.length > 0 ? (
-                    <>
-                        <p className="text-sm text-muted-foreground mb-4">
-                            We've noticed you could improve in the following areas: <span className="font-semibold text-primary">{weakSkills.join(', ')}</span>.
-                        </p>
-                        <Button onClick={handleGetSuggestions} disabled={isLoading}>
-                            {isLoading ? 'Analyzing...' : 'Get Video Suggestions'}
-                        </Button>
-                    </>
-                ) : (
-                    <p className="text-sm font-medium text-green-600">
+                {weakSkills.length === 0 && !isLoading && !error && suggestions.length === 0 && (
+                    <p className="text-sm font-medium text-green-600 text-center py-4">
                         Great job! You're scoring well in all your recent quizzes. Keep it up!
                     </p>
                 )}
 
                 {isLoading && (
-                    <div className="mt-4 space-y-2">
+                    <div className="space-y-2">
                         {[...Array(3)].map((_, i) => (
                             <div key={i} className="animate-pulse flex space-x-4">
-                                <div className="rounded-md bg-muted h-16 w-28"></div>
                                 <div className="flex-1 space-y-2 py-1">
                                     <div className="h-4 bg-muted rounded w-3/4"></div>
                                     <div className="h-4 bg-muted rounded w-1/2"></div>
@@ -75,23 +72,19 @@ export function AIAssistant({ quizzes }) {
                     </div>
                 )}
 
-                {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
+                {error && <p className="text-sm text-destructive text-center py-4">{error}</p>}
 
                 {suggestions.length > 0 && (
-                    <div className="mt-6">
-                        <h4 className="font-semibold mb-4">Recommended Videos:</h4>
-                        <div className="space-y-4">
-                            {suggestions.map((video, index) => (
-                                <div key={index} className="flex items-center gap-4">
-                                    <Link href={video.link} target="_blank" rel="noopener noreferrer" className="block w-28 flex-shrink-0">
-                                        <img src={video.thumbnail} alt={video.title} className="rounded-md object-cover w-full h-16 transition-transform hover:scale-105" />
+                    <div className="mt-4">
+                        <h4 className="font-semibold mb-2 text-sm">Recommended Courses:</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {suggestions.map((course, index) => (
+                                <div key={index} className="p-3 rounded-lg border bg-background hover:bg-muted/50 transition-colors flex flex-col">
+                                    <Link href={course.link} target="_blank" rel="noopener noreferrer" className="flex-grow">
+                                        <p className="font-semibold text-sm hover:text-primary transition-colors">{course.title}</p>
+                                        <p className="text-xs text-muted-foreground mt-1 flex-grow">{course.description}</p>
                                     </Link>
-                                    <div className="flex-1">
-                                        <Link href={video.link} target="_blank" rel="noopener noreferrer">
-                                            <p className="font-semibold text-sm hover:text-primary transition-colors">{video.title}</p>
-                                        </Link>
-                                        <p className="text-xs text-muted-foreground">{video.channel}</p>
-                                    </div>
+                                    <p className="text-xs font-medium text-muted-foreground uppercase mt-2 pt-2 border-t border-border/40">{course.platform}</p>
                                 </div>
                             ))}
                         </div>

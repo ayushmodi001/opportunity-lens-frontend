@@ -5,18 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, Info } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {doSocialLogin} from "@/app/actions";
 import Image from "next/image";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export function SgForm({ className, ...props }) {
 
   const router = useRouter()
-  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   // Add loading state
@@ -35,28 +34,41 @@ export function SgForm({ className, ...props }) {
     // Toast will be handled by the server action result
   }
 
+  const showPasswordInfo = () => {
+    toast.info("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.", {
+      duration: 8000,
+    });
+  };
+
   async function handleSubmit(event) {
     event.preventDefault();
     setIsLoading(true)
+
+    const formData = new FormData(event.currentTarget)
+    const Username = formData.get('Username')
+    const email = formData.get('email')
+    const password = formData.get('password')
+    const cpassword = formData.get('cpassword')
+
+    // Client-side validation
+    if (password !== cpassword) {
+      setIsLoading(false)
+      toast.error("Password Mismatch", {
+        description: "Password and confirm password do not match.",
+      })
+      return
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setIsLoading(false);
+      toast.error("Invalid Password", {
+        description: "Password does not meet the required criteria. Click the info icon for details.",
+      });
+      return;
+    }
+
     try {
-      const formData = new FormData(event.currentTarget)
-
-      const Username = formData.get('Username')
-      const email = formData.get('email')
-      const password = formData.get('password')
-      const cpassword = formData.get('cpassword')
-
-      // Client-side validation
-      if (password !== cpassword) {
-        setIsLoading(false)
-        toast({
-          title: "Password Mismatch",
-          description: "Password and confirm password do not match.",
-          variant: "destructive",
-        })
-        return
-      }
-
       const response = await fetch(`api/register`,{
         method : "POST",
         headers : {
@@ -76,20 +88,16 @@ export function SgForm({ className, ...props }) {
       } else {
         const errorData = await response.json()
         setIsLoading(false)
-        toast({
-          title: "Sign Up Failed",
+        toast.error("Sign Up Failed", {
           description: errorData.message || "An error occurred during sign up. Please try again.",
-          variant: "destructive",
         })
       }
 
     } catch (error) {
       console.error(error)
       setIsLoading(false)
-      toast({
-        title: "Sign Up Failed",
+      toast.error("Sign Up Failed", {
         description: "An error occurred during sign up. Please try again.",
-        variant: "destructive",
       })
     }
   }
@@ -130,7 +138,13 @@ export function SgForm({ className, ...props }) {
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Info 
+                      className="h-4 w-4 cursor-pointer text-muted-foreground hover:text-foreground" 
+                      onClick={showPasswordInfo}
+                    />
+                  </div>
                   <Button
                     type="button"
                     variant="ghost"
@@ -199,53 +213,42 @@ export function SgForm({ className, ...props }) {
                 Or continue with
               </span>
             </div>
-            
+
             <form action={doSocialLogin}>
-              <Button 
-                className="w-full" 
-                type="submit" 
-                value="google" 
-                name="action"
-                disabled={isGoogleLoading}
-                onClick={handleGoogleSignup}
-              >
-                {isGoogleLoading ? (
-                  <>
+                <Button 
+                  name="action" 
+                  value="google" 
+                  variant="outline" 
+                  className="w-full" 
+                  onClick={handleGoogleSignup}
+                  disabled={isLoading || isGoogleLoading}
+                >
+                  {isGoogleLoading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing up...
-                  </>
-                ) : (
-                  <>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5 mr-2">
-                      <path
-                        d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                    Sign-up using Google
-                  </>
-                )}
-              </Button>
+                  ) : (
+                    <Image src="/google.svg" alt="Google" width={16} height={16} className="mr-2" />
+                  )}
+                  Google
+                </Button>
             </form>
-            
-            <div className="text-center text-sm">
-              Have an account?{" "}
-              <Link href="/login" className="underline underline-offset-4">
+
+            <p className="text-center text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="underline underline-offset-4 hover:text-primary"
+              >
                 Login
               </Link>
-            </div>
+            </p>
           </div>
-          <div className="bg-muted flex">
+          <div className="hidden bg-muted md:flex md:items-center md:justify-center p-8">
             <Image 
-              src="/loginOl.svg" 
-              alt="Login Image" 
-              width={500} 
-              height={500} 
-              priority
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = '/loginOL.svg'; 
-              }}
+              src="/signupOl.svg" 
+              alt="Sign Up Illustration" 
+              width={400} 
+              height={400} 
+              className="object-contain"
             />
           </div>
         </CardContent>
