@@ -13,7 +13,14 @@ const quizSchema = new Schema({
     questions: [mcqSchema],
     topic_counts: { type: Object },
     score: { type: Number, default: 0 },
+    completedAt: { type: Date },
     createdAt: { type: Date, default: Date.now },
+});
+
+const achievementSchema = new Schema({
+    quizName: { type: String, required: true },
+    score: { type: Number, required: true },
+    date: { type: Date, default: Date.now }
 });
 
 const userSchema = new Schema({
@@ -30,7 +37,8 @@ const userSchema = new Schema({
         required : true,
         type : String,
     },
-    quizzes: [quizSchema]
+    quizzes: [quizSchema],
+    achievements: [achievementSchema]
 });
 
 delete mongoose.models.User;
