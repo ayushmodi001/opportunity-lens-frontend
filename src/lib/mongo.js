@@ -1,55 +1,24 @@
 import mongoose from 'mongoose';
 
-// Global connection management
+// This global variable will hold the cached database connection
 let cachedConnection = null;
 
 export async function dbConnect() {
-  // Check if we have a cached connection
+  // If we already have a connection, reuse it
   if (cachedConnection) {
     return cachedConnection;
   }
 
-  // Mongoose connection options
-  const opts = {
-    serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
-    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-    family: 4 // Use IPv4, skip trying IPv6
-  };
-
+  // If not, create a new connection
   try {
-    // Attempt to connect
-    const connection = await mongoose.connect(process.env.MONGO_DB_CONNECTION_STRING, opts);
+    const connection = await mongoose.connect(process.env.MONGO_DB_CONNECTION_STRING);
     
-    // Cache the connection
+    // Cache the connection for future use
     cachedConnection = connection;
-
-    // Optional: Log successful connection
     console.log('MongoDB connected successfully');
-
-    //Check for already connected state 
-    if (mongoose.connection.readyState >= 1) {
-        console.log("Already connected");
-        return;
-      }
-
     return connection;
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    
-    // Implement fallback or retry mechanism
     throw new Error('Could not connect to MongoDB');
-  }
-}
-
-// Middleware for serverless functions
-export async function connectMiddleware(req, res, next) {
-  try {
-    await connectToDatabase();
-    next();
-  } catch (error) {
-    res.status(500).json({ 
-      error: 'Database connection failed', 
-      details: error.message 
-    });
   }
 }

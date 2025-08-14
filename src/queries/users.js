@@ -4,48 +4,66 @@ import { dbConnect } from "@/lib/mongo";
 export async function getQuizzesForUser(email) {
     try {
         await dbConnect();
-        const user = await User.findOne({ email }).select("quizzes").lean();
-        // Sort quizzes by createdAt date in descending order (newest first)
-        const quizzes = user ? user.quizzes : [];
-        quizzes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return quizzes;
+        const user = await User.findOne({ email: email }).lean();
+        return user ? user.quizzes : [];
     } catch (error) {
-        console.error("Error fetching quizzes:", error);
-        return [];
+        console.error("Error fetching quizzes for user:", error);
+        throw new Error("Failed to fetch quizzes.");
     }
 }
 
-export async function addQuizToUser(email, quizData) {
+export async function findUserByCredentials(credentials) {
     try {
         await dbConnect();
-        // Add createdAt timestamp to the quiz data
-        const quizWithTimestamp = { ...quizData, createdAt: new Date() };
-
-        const result = await User.updateOne(
-            { email },
-            { $push: { quizzes: { $each: [quizWithTimestamp], $position: 0 } } }
-        );
-
-        if (result.modifiedCount === 0) {
-            const user = await User.findOne({ email });
-            if (!user) {
-                throw new Error("User not found.");
-            }
-            throw new Error("Failed to add quiz to user for an unknown reason.");
-        }
-
-        return { success: true, message: "Quiz added successfully." };
+        const user = await User.findOne({ email: credentials.email }).lean();
+        return user;
     } catch (error) {
-        console.error("Error adding quiz to user:", error);
-        throw error; // Re-throw to be handled by the API route
+        console.error("Error finding user by credentials:", error);
+        throw new Error("Failed to find user.");
     }
 }
 
-export async function createUser(userData){
+export async function registerUser(data) {
     try {
-        const user = await User.create(userData)  // <-- Use userData instead of user
-        return user;
+        await dbConnect();
+        const userToInsert = data.user ? data.user : data;
+        const newUser = await User.create(userToInsert);
+        return newUser;
     } catch (error) {
-        throw new Error(error.message)  // Better to pass the error message as a string
+        console.error("Error registering user:", error);
+        throw new Error("Failed to register user.");
+    }
+}
+
+export async function updateSocialUser(user) {
+    try {
+        await dbConnect();
+        const filter = { email: user.email };
+        const update = {
+            $set: {
+                name: user.name,
+                image: user.image,
+            },
+        };
+        const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+        const updatedUser = await User.findOneAndUpdate(filter, update, options);
+        return updatedUser;
+    } catch (error) {
+        console.error("Error updating social user:", error);
+        throw new Error("Failed to update social user.");
+    }
+}
+
+export async function saveQuizForUser(email, quizData) {
+    try {
+        await dbConnect();
+        const result = await User.updateOne(
+            { email: email },
+            { $push: { quizzes: quizData } }
+        );
+        return result;
+    } catch (error) {
+        console.error("Error saving quiz for user:", error);
+        throw new Error("Failed to save quiz.");
     }
 }

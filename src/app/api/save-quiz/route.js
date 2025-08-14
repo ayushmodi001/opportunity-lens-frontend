@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { addQuizToUser } from "@/queries/users";
+import { saveQuizForUser } from "@/queries/users";
 
 export async function POST(request) {
     const session = await auth();
@@ -15,7 +15,7 @@ export async function POST(request) {
         
         console.log("Received quiz data for user:", session.user.email);
         
-        const result = await addQuizToUser(session.user.email, quizData);
+        const result = await saveQuizForUser(session.user.email, quizData);
 
         return new Response(JSON.stringify({ message: result.message }), { status: 200 });
 

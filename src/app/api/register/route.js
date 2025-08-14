@@ -1,29 +1,46 @@
 import { NextResponse } from "next/server";
-import { createUser } from "@/queries/users";
+import { registerUser } from "@/queries/users";
 import bcrypt from "bcryptjs";
-import { dbConnect } from "@/lib/mongo";
 
 export const POST = async (request) => {
-  await dbConnect();
   try {
     const { Username, email, password, cpassword } = await request.json();
-    console.log(Username, email, password, cpassword);
 
-    //Immediately respond to client to prevent timeout
-    const response = new NextResponse(
-      JSON.stringify({ message: "Processing registration..." }),
-      {
-        status: 201, // Non-blocking response
-        headers: { "Content-Type": "application/json" },
-      }
+    if (password !== cpassword) {
+      return new NextResponse(
+        JSON.stringify({ message: "Passwords do not match" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 5);
+
+    const newUser = {
+      Username,
+      email,
+      password: hashedPassword,
+    };
+
+    await registerUser(newUser);
+
+    return new NextResponse(
+      JSON.stringify({ message: "User registered successfully" }),
+      { status: 201, headers: { "Content-Type": "application/json" } }
     );
-
-    // Process registration in the background
-    registerUser(Username, email, password, cpassword);
-
-    return response;
   } catch (error) {
     console.error("Registration error:", error);
+    // Check for duplicate key error (email already exists)
+    if (error.code === 11000) {
+      return new NextResponse(
+        JSON.stringify({
+          message: "An account with this email already exists.",
+        }),
+        {
+          status: 409, // Conflict
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
     return new NextResponse(
       JSON.stringify({
         message: "Registration failed",
@@ -34,33 +51,5 @@ export const POST = async (request) => {
         headers: { "Content-Type": "application/json" },
       }
     );
-  }
-};
-
-// Background registration function (does NOT block API response)
-const registerUser = async (Username, email, password, cpassword) => {
-  try {
-    if (password !== cpassword) {
-      console.log("Passwords do not match");
-      return;
-    }
-
-    // Connect to DB
-
-    // Encrypt the Password
-    const hashedPassword = await bcrypt.hash(password, 5);
-
-    // Form for DB Payload
-    const newUser = {
-      Username,
-      password: hashedPassword,
-      email,
-    };
-
-    // Update the DB
-    await createUser(newUser);
-    console.log("User has been created:", email);
-  } catch (error) {
-    console.error("Background registration error:", error);
   }
 };
