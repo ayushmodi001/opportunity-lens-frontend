@@ -21,20 +21,19 @@ export async function doCredLogin(formData) {
             redirect: false
         });
 
+        // This part is for successful logins or other non-throwing errors
         if (response && response.error) {
-            console.error("Login failed:", response.error);
-            // Normalize error messages for consistent frontend handling
-            const errorMessage = response.error.toString();
-            if (errorMessage.includes("CredentialsSignin")) {
-                return { error: "Invalid credentials or user not found." };
-            }
-            return { error: "An unexpected error occurred during login." };
+            return { error: "Invalid credentials or user not found." };
         }
         
         return response; // Success case
 
     } catch (error) {
-        // This catches errors if the signIn call itself fails unexpectedly
+        // This catches errors thrown by signIn, like invalid credentials
+        if (error.type === 'CredentialsSignin' || error.message.includes('CredentialsSignin')) {
+            return { error: "Invalid credentials or user not found." };
+        }
+        // For any other unexpected errors
         console.error("Catch block error in doCredLogin:", error);
         return { error: "An internal server error occurred." };
     }
@@ -47,7 +46,7 @@ export async function getLearningSuggestions(skills) {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
         const prompt = `
             You are an expert course recommender. Your goal is to provide high-quality, relevant online courses for a user looking to improve their technical skills.
