@@ -4,7 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 // import {getUserByEmail} from "./data/users"
 import { dbConnect } from "@/lib/mongo";
 
-import {User} from "./model/user-model";
+import { findUserByCredentials } from "@/queries/users";
 import bcrypt from "bcryptjs";
 
 
@@ -23,8 +23,7 @@ export const {
                     if (credentials == null) return null;
                     
                     try {
-                        await dbConnect();
-                        const user = await User.findOne({ email: credentials.email });
+                        const user = await findUserByCredentials(credentials);
 
                         if (user) {
                             const isMatch = await bcrypt.compare(
@@ -33,20 +32,15 @@ export const {
                             );
 
                             if (isMatch) {
-                                return {
-                                    id: user._id,
-                                    email: user.email,
-                                    name: user.Username,
-                                };
+                                return user;
                             }
                         }
                     } catch (error) {
                         console.error("Authorization Error:", error);
-                        // To prevent revealing whether a user exists, we'll fall through and return null,
-                        // but you could also throw a specific error for logging if needed.
+                        throw new Error("Authentication failed.");
                     }
                     
-                    return null; // Return null for any failed authentication attempt
+                    return null;
                 }
             }),
             GoogleProvider({
