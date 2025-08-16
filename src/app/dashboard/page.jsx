@@ -20,6 +20,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <Dashboard 
+        user={JSON.parse(JSON.stringify(user))}
         session={session} 
         availableQuizzes={JSON.parse(JSON.stringify(availableQuizzes))}
         recentQuizzes={JSON.parse(JSON.stringify(recentQuizzes))}

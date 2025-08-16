@@ -14,7 +14,7 @@ const StaggeredFade = ({ text, className = '' }) => {
     }),
   };
 
-  const letters = text.split('');
+  const letters = typeof text === 'string' ? text.split('') : [];
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 

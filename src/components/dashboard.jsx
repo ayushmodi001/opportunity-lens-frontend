@@ -15,9 +15,9 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Bar, BarChart as RechartsBarChart, CartesianGrid, XAxis, YAxis, Cell, LineChart, Line, AreaChart, Area } from "recharts"
 import { AIAssistant } from "./ai-assistant";
 
-export function Dashboard({ session, availableQuizzes, recentQuizzes, achievements, totalQuizzes }) {
+export function Dashboard({ user, session, availableQuizzes, recentQuizzes, achievements, totalQuizzes }) {
     const userImage = session?.user?.image && session.user.image.trim() !== "" ? session.user.image : "/Avatar21.svg";
-    const userName = session?.user?.name;
+    const userName = user?.Username || session?.user?.name;
 
     const chartData = recentQuizzes.map(quiz => ({
         name: (quiz.title || (quiz.skills && quiz.skills.length > 0 ? quiz.skills[0] : "Untitled Quiz")).slice(0, 15), // Shorten name for chart
