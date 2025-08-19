@@ -103,17 +103,17 @@ export function SgForm({ className, ...props }) {
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden">
+    <div className={cn("flex items-center justify-center min-h-screen bg-muted", className)} {...props}>
+      <Card className="mx-auto max-w-sm md:max-w-3xl w-full overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <div className="p-6 md:p-8 flex flex-col gap-6">
-            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-              <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome</h1>
-                <p className="text-balance text-muted-foreground">
-                  Create your account
-                </p>
-              </div>
+          <div className="p-6 md:p-8 flex flex-col gap-4">
+            <div className="flex flex-col items-center text-center mb-4">
+              <h1 className="text-2xl font-bold">Welcome</h1>
+              <p className="text-balance text-muted-foreground">
+                Create your account
+              </p>
+            </div>
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div className="grid gap-2">
                 <Label htmlFor="Username">Username</Label>
                 <Input 
@@ -137,71 +137,65 @@ export function SgForm({ className, ...props }) {
                 />
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Info 
-                      className="h-4 w-4 cursor-pointer text-muted-foreground hover:text-foreground" 
-                      onClick={showPasswordInfo}
-                    />
-                  </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Info 
+                    className="h-4 w-4 cursor-pointer text-muted-foreground hover:text-foreground" 
+                    onClick={showPasswordInfo}
+                  />
+                </div>
+                <div className="relative">
+                  <Input 
+                    id="password" 
+                    type={showPassword ? "text" : "password"}
+                    name="password" 
+                    placeholder="Enter Password" 
+                    required 
+                    disabled={isLoading}
+                    className="pr-10"
+                  />
                   <Button
                     type="button"
                     variant="ghost"
-                    size="sm"
-                    className="h-8 px-2"
+                    size="icon"
+                    className="absolute top-0 right-0 h-full w-10 text-muted-foreground"
                     onClick={() => togglePassword('password')}
                     disabled={isLoading}
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
-                <Input 
-                  id="password" 
-                  type={showPassword ? "text" : "password"}
-                  name="password" 
-                  placeholder="Enter Password" 
-                  required 
-                  disabled={isLoading}
-                />
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="cpassword">Confirm Password</Label>
+                <Label htmlFor="cpassword">Confirm Password</Label>
+                <div className="relative">
+                  <Input 
+                    id="cpassword" 
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="cpassword" 
+                    placeholder="Confirm Password" 
+                    required 
+                    disabled={isLoading}
+                    className="pr-10"
+                  />
                   <Button
                     type="button"
                     variant="ghost"
-                    size="sm"
-                    className="h-8 px-2"
+                    size="icon"
+                    className="absolute top-0 right-0 h-full w-10 text-muted-foreground"
                     onClick={() => togglePassword('confirm')}
                     disabled={isLoading}
                   >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
-                <Input 
-                  id="cpassword" 
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="cpassword" 
-                  placeholder="Confirm Password" 
-                  required 
-                  disabled={isLoading}
-                />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Create account"}
               </Button>
             </form>
 
-            <div className="relative my-4">
+            <div className="relative my-2">
                 <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                 </div>
@@ -218,20 +212,20 @@ export function SgForm({ className, ...props }) {
                 </Button>
             </form>
 
-            <div className="mt-4 text-center text-sm">
+            <div className="mt-2 text-center text-sm">
               Already have an account?{" "}
               <Link href="/login" className="underline">
                 Sign in
               </Link>
             </div>
           </div>
-          <div className="hidden bg-muted md:block md:items-center md:justify-center p-8">
-            <Image 
-              src="/signupOl.svg" 
-              alt="Sign Up Illustration" 
-              width={400} 
-              height={400} 
-              className="object-contain"
+          <div className="hidden bg-muted md:flex md:items-center md:justify-center p-6">
+            <Image
+              src="/signupOl.svg"
+              alt="Signup illustration"
+              width={400}
+              height={400}
+              className="dark:brightness-[0.8] dark:contrast-[1.2]"
             />
           </div>
         </CardContent>

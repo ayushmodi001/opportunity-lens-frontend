@@ -145,13 +145,13 @@ export function LoginForm({ className, ...props }) {
               </Link>
             </div>
           </div>
-          <div className="hidden bg-muted md:block">
+          <div className="hidden bg-muted md:flex md:items-center md:justify-center p-6">
             <Image
-              src="/signupOl.svg"
-              alt="Image"
-              className=""
-              width={500}
-              height={100}
+              src="/loginOL.svg"
+              alt="Login illustration"
+              width={400}
+              height={400}
+              className="dark:brightness-[0.8] dark:contrast-[1.2]"
             />
           </div>
         </CardContent>

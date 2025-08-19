@@ -12,8 +12,8 @@ export default async function DashboardPage() {
   await dbConnect();
   const user = await User.findOne({ email: session.user.email }).lean();
 
-  const availableQuizzes = (user.quizzes || []).filter(q => !q.completedAt);
-  const recentQuizzes = (user.quizzes || []).filter(q => q.completedAt).sort((a, b) => b.completedAt - a.createdAt);
+  const availableQuizzes = user.quizzes.filter(q => !q.completedAt);
+  const recentQuizzes = user.quizzes.filter(q => q.completedAt).sort((a, b) => b.completedAt - a.completedAt);
   const achievements = user.achievements || [];
   const totalQuizzes = availableQuizzes.length;
 
