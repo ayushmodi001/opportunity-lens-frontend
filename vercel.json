@@ -11,6 +11,12 @@
       "src/app/(auth|dashboard)/**/*.{js,ts}": {
         "maxDuration": 30,
         "memory": 512
+      },
+      "src/app/**/*.js": {
+        "maxDuration": 30
+      },
+      "src/app/**/*.jsx": {
+        "maxDuration": 30
       }
     },
     "routes": [
