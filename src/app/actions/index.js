@@ -88,14 +88,27 @@ export async function getLearningSuggestions(skills) {
         const response = await result.response;
         const text = await response.text();
         
-        // Clean the response to ensure it's valid JSON
-        const jsonString = text.replace(/```json|```/g, '').trim();
+        let jsonString = text.replace(/```json|```/g, '').trim();
         
-        const suggestions = JSON.parse(jsonString);
-        return suggestions;
+        // A more robust way to find the JSON part
+        if (jsonString.indexOf('[') > -1 && jsonString.lastIndexOf(']') > -1) {
+            jsonString = jsonString.substring(jsonString.indexOf('['), jsonString.lastIndexOf(']') + 1);
+        }
+
+        try {
+            const suggestions = JSON.parse(jsonString);
+            return suggestions;
+        } catch (parseError) {
+            console.error("Failed to parse JSON response from AI:", parseError);
+            console.error("Raw AI response:", text);
+            return { error: "The AI returned an invalid response. Please try again." };
+        }
 
     } catch (error) {
         console.error("Error fetching learning suggestions:", error);
-        return { error: "Failed to get suggestions from AI. The API key might be invalid or the service may be down." };
+        if (error.message.includes('API key not valid')) {
+            return { error: "The AI service API key is not valid. Please check your configuration." };
+        }
+        return { error: "Could not connect to the AI service. Please try again later." };
     }
 }
