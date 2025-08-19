@@ -34,11 +34,10 @@ const userSchema = new Schema({
         unique : true
     },
     password : {
-        required : true,
         type : String,
     },
-    quizzes: [quizSchema],
-    achievements: [achievementSchema]
+    quizzes: { type: [quizSchema], default: [] },
+    achievements: { type: [achievementSchema], default: [] }
 });
 
 delete mongoose.models.User;

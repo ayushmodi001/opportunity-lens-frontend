@@ -69,3 +69,14 @@ export async function saveQuizForUser(email, quizData) {
         throw new Error("Failed to save quiz.");
     }
 }
+
+export async function findUserByEmail(email) {
+    try {
+        await dbConnect();
+        const user = await User.findOne({ email }).lean();
+        return user;
+    } catch (error) {
+        console.error("Error finding user by email:", error);
+        throw new Error("Failed to find user by email.");
+    }
+}
