@@ -41,10 +41,12 @@ export async function updateSocialUser(user) {
         const filter = { email: user.email };
         const update = {
             $set: {
-                name: user.name,
+                // Use the name from the social provider for the Username field
+                Username: user.name, 
                 image: user.image,
             },
         };
+        // Create the user if they don't exist, and return the new document
         const options = { upsert: true, new: true, setDefaultsOnInsert: true };
         const updatedUser = await User.findOneAndUpdate(filter, update, options);
         return updatedUser;
