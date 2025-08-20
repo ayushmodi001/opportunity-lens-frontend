@@ -64,22 +64,28 @@ export const {
                     return false;
                 }
             }
-            return true;
+            return true; // For credentials login, just continue
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user, account }) {
             if (user) {
+                // This is the initial sign-in
                 const dbUser = await findUserByEmail(user.email);
                 if (dbUser) {
-                    token.id = dbUser._id;
+                    token.id = dbUser._id.toString(); // Add user's database ID to the token
+                    token.name = dbUser.Username; // Ensure username from DB is in token
+                    token.picture = dbUser.image; // Ensure image from DB is in token
                 }
             }
             return token;
         },
         async session({ session, token }) {
-            if (token) {
+            // Add the user's DB id from the token to the session object
+            if (token && session.user) {
                 session.user.id = token.id;
+                session.user.name = token.name;
+                session.user.image = token.picture;
             }
             return session;
         },
-    },
+    }
 })
