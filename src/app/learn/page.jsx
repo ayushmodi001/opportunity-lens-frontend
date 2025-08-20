@@ -1,5 +1,4 @@
 import { auth } from "@/auth"
-import { redirect } from "next/navigation"
 import { dbConnect } from "@/lib/mongo";
 import React from 'react'
 import { Timeline } from "@/components/ui/timeline";
@@ -21,59 +20,7 @@ export default async function page() {
     const user = await User.findOne({ email: session.user.email }).lean();
     const userImage = session?.user?.image && session.user.image.trim() !== "" ? session.user.image : "/Avatar21.svg";
 
-    // This will be fetched from the database later
-    const modules = [
-        {
-            title: "Module 1: Introduction to Programming",
-            chapters: [
-                {
-                    title: "Chapter 1: Getting Started",
-                    subTopics: [
-                        { title: "What is Programming?", demoLink: "/learn/demo/intro-to-programming/chapter-1/sub-1" },
-                        { title: "Setting up your environment", demoLink: "/learn/demo/intro-to-programming/chapter-1/sub-2" },
-                    ]
-                },
-                {
-                    title: "Chapter 2: Variables and Data Types",
-                    subTopics: [
-                        { title: "Understanding Variables", demoLink: "/learn/demo/intro-to-programming/chapter-2/sub-1" },
-                        { title: "Exploring Data Types", demoLink: "/learn/demo/intro-to-programming/chapter-2/sub-2" },
-                    ]
-                },
-            ],
-            quiz: {
-                id: "quiz1",
-                title: "Module 1 Assessment",
-                description: "Test your knowledge on the basics of programming.",
-            },
-        },
-        {
-            title: "Module 2: Data Structures",
-            chapters: [
-                {
-                    title: "Chapter 1: Arrays",
-                    subTopics: [
-                        { title: "Introduction to Arrays", demoLink: "/learn/demo/data-structures/chapter-1/sub-1" },
-                        { title: "Array Operations", demoLink: "/learn/demo/data-structures/chapter-1/sub-2" },
-                    ]
-                },
-            ],
-            quiz: {
-                id: "quiz2",
-                title: "Module 2 Assessment",
-                description: "Test your knowledge on data structures.",
-            },
-        },
-        {
-            title: "End Assessment",
-            chapters: [],
-            quiz: {
-                id: "final-assessment",
-                title: "Final Course Assessment",
-                description: "This is the final assessment to complete the course.",
-            },
-        }
-    ];
+    const modules = user?.learningPath && user.learningPath.length > 0 ? user.learningPath : [];
 
     const data = modules.map((module, moduleIndex) => ({
         title: module.title,
@@ -100,11 +47,6 @@ export default async function page() {
                             ))}
                         </Accordion>
                     )}
-                    <div className="flex gap-4 mt-4">
-                        <Link href={`/quiz/${module.quiz.id}`} passHref>
-                            <Button>{module.quiz.title}</Button>
-                        </Link>
-                    </div>
                 </CardContent>
             </Card>
         )

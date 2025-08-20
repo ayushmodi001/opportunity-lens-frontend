@@ -2,6 +2,96 @@
 
 import { signIn, signOut } from "@/auth"
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { User } from "@/model/user-model";
+import { auth } from "@/auth";
+
+export async function toggleModuleCompletion(moduleTitle, completed) {
+    "use server";
+    const session = await auth();
+    if (!session?.user?.email) {
+        throw new Error("User not authenticated.");
+    }
+
+    try {
+        const result = await User.updateOne(
+            { email: session.user.email, "learningPath.title": moduleTitle },
+            { $set: { "learningPath.$.completed": completed } }
+        );
+
+        if (result.nModified === 0) {
+            // This can happen if the module title doesn't match.
+            // You might want to handle this case, e.g., by returning an error.
+            console.warn(`No module found with title: ${moduleTitle} for user: ${session.user.email}`);
+        }
+        
+        // No need to revalidate if you're handling state on the client
+        // revalidatePath("/learn"); 
+
+        return { success: true };
+
+    } catch (error) {
+        console.error("Error updating module completion:", error);
+        return { error: "Failed to update module status." };
+    }
+}
+
+
+export async function generatePersonalizedCourse(topics) {
+    const session = await auth();
+    if (!session?.user?.email) {
+        return { error: "User not authenticated." };
+    }
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const jsonFormat = `
+    [
+        {
+            "title": "Module 1: Topic Name",
+            "chapters": [
+                {
+                    "title": "Chapter 1: Sub-topic",
+                    "subTopics": [
+                        { "title": "Specific Lesson 1", "demoLink": "/learn/demo/module-1/chapter-1/sub-1" },
+                        { "title": "Specific Lesson 2", "demoLink": "/learn/demo/module-1/chapter-1/sub-2" }
+                    ]
+                }
+            ],
+            "completed": false
+        }
+    ]
+    `;
+
+    const prompt = `
+    Based on the following topics: ${topics.join(", ")}. 
+    Generate a structured learning path for a beginner.
+    The output MUST be a valid JSON array, following this exact structure and format: ${jsonFormat}.
+    Do not include any text, explanations, or markdown formatting like \`\`\`json before or after the JSON array.
+    Do NOT include any quizzes or assessments. The path is for learning only.
+    Create 2-3 modules, each with 2-3 chapters. Each chapter should have 2-3 sub-topics.
+    The demoLink paths should be structured logically based on the module and chapter titles.
+    `;
+
+    try {
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+
+        const learningPathData = JSON.parse(text);
+
+        await User.updateOne(
+            { email: session.user.email },
+            { $set: { learningPath: learningPathData } }
+        );
+
+        return { success: true };
+
+    } catch (error) {
+        console.error("Error generating or saving personalized course:", error);
+        return { error: "Failed to generate the learning path. Please try again." };
+    }
+}
 
 export  async function doSocialLogin(formData) {
         const action = formData.get('action')
@@ -46,7 +136,7 @@ export async function getLearningSuggestions(skills) {
 
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
             You are an expert course recommender. Your goal is to provide high-quality, relevant online courses for a user looking to improve their technical skills.

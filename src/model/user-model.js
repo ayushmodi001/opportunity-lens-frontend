@@ -34,12 +34,24 @@ const userSchema = new Schema({
         unique : true
     },
     password : {
-        required : true,
         type : String,
     },
-    quizzes: [quizSchema],
-    achievements: [achievementSchema]
-});
+    image: {
+        type: String,
+    },
+    quizzes: {
+        type: [quizSchema],
+        default: []
+    },
+    achievements: {
+        type: [achievementSchema],
+        default: []
+    },
+    learningPath: {
+        type: Array,
+        default: [],
+    }
+}, { timestamps: true });
 
 delete mongoose.models.User;
 

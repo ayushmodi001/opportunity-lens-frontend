@@ -14,6 +14,7 @@ import Link from "next/link"
 import { MultiSelect } from './ui/multi-select'
 import { toast } from "sonner";
 import { Checkbox } from './ui/checkbox'
+import { generatePersonalizedCourse } from '@/app/actions';
 
 export function TestPage({ userImage, userName }) {
     const router = useRouter();
@@ -138,6 +139,32 @@ export function TestPage({ userImage, userName }) {
             toast.error(`An error occurred: ${error.message}`);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleGenerateCourse = async () => {
+        if (selectedItems.length === 0) {
+            toast.warning(`Please select at least one subject.`);
+            return;
+        }
+        if (isDegreeTest) {
+            toast.info("Course generation is available for topics, not degrees.");
+            return;
+        }
+
+        toast.info("Generating your personalized learning path... This may take a moment.");
+        
+        try {
+            const result = await generatePersonalizedCourse(selectedItems);
+            if (result?.success) {
+                toast.success("Learning path created! You can view it on the Learn page.");
+                router.push('/learn');
+            } else {
+                throw new Error(result?.error || "An unknown error occurred.");
+            }
+        } catch (error) {
+            console.error("Failed to generate course:", error);
+            toast.error(`Failed to create learning path: ${error.message}`);
         }
     };
 
@@ -274,6 +301,21 @@ export function TestPage({ userImage, userName }) {
                                 >
                                     {isLoading ? 'Preparing Test...' : 'Start Assessment'}
                                 </ShinyButton>
+
+                                <div className="relative flex py-2 items-center">
+                                    <div className="flex-grow border-t border-muted-foreground"></div>
+                                    <span className="flex-shrink mx-4 text-muted-foreground">Or</span>
+                                    <div className="flex-grow border-t border-muted-foreground"></div>
+                                </div>
+
+                                <Button
+                                    variant="outline"
+                                    onClick={handleGenerateCourse}
+                                    disabled={isDegreeTest || selectedItems.length === 0}
+                                    className="w-full py-6"
+                                >
+                                    Just Generate Learning Path
+                                </Button>
                             </div>
                         </div>
                     </Card>
