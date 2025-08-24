@@ -53,8 +53,8 @@ export async function generatePersonalizedCourse(topics) {
                 {
                     "title": "Chapter 1: Sub-topic",
                     "subTopics": [
-                        { "title": "Specific Lesson 1", "demoLink": "/learn/demo/module-1/chapter-1/sub-1" },
-                        { "title": "Specific Lesson 2", "demoLink": "/learn/demo/module-1/chapter-1/sub-2" }
+                        { "title": "State-a Component's  Memory", "demoLink": "https://react.dev/learn/state-a-components-memory" },
+                        { "title": "Stacks", "demoLink": "https://www.geeksforgeeks.org/dsa/stack-data-structure/" }
                     ]
                 }
             ],
@@ -64,13 +64,14 @@ export async function generatePersonalizedCourse(topics) {
     `;
 
     const prompt = `
-    Based on the following topics: ${topics.join(", ")}. 
-    Generate a structured learning path for a beginner.
-    The output MUST be a valid JSON array, following this exact structure and format: ${jsonFormat}.
-    Do not include any text, explanations, or markdown formatting like \`\`\`json before or after the JSON array.
-    Do NOT include any quizzes or assessments. The path is for learning only.
-    Create 2-3 modules, each with 2-3 chapters. Each chapter should have 2-3 sub-topics.
-    The demoLink paths should be structured logically based on the module and chapter titles.
+    You are a fast proffesional web scraper at perplexity ai.
+    your Tasks: 
+    1. Based on the following topics: ${topics.join(", ")}. 
+    2. Generate a structured learning path for a beginner.
+    3. The output MUST be a valid JSON array, following this exact structure and format: ${jsonFormat}.
+    4. Do not include any text, explanations, or markdown formatting like \`\`\`json before or after the JSON array.
+    5. Do NOT include any quizzes or assessments. The path is for learning only.
+    6. Create 2-3 modules, each with 2-3 chapters. Each chapter should have 2-3 sub-topics Those subtopics should have a valid and latest link to a valid page like gfg or w3schools or any other like even javatpoint for eg a react module would include link to react doc.please make sure the links are latest and new versions as they keep on changing in every few days. make sure to not include legacy docs like here https://legacy.reactjs.org/docs/components-and-props.html. Please make sure the links are working and active as they may turn dead even in an hour sometimes   . 
     `;
 
     try {
