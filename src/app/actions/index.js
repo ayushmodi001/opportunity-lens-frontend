@@ -53,8 +53,8 @@ export async function generatePersonalizedCourse(topics) {
                 {
                     "title": "Chapter 1: Sub-topic",
                     "subTopics": [
-                        { "title": "Specific Lesson 1", "demoLink": "/learn/demo/module-1/chapter-1/sub-1" },
-                        { "title": "Specific Lesson 2", "demoLink": "/learn/demo/module-1/chapter-1/sub-2" }
+                        { "title": "State-a Component's  Memory", "demoLink": "https://react.dev/learn/state-a-components-memory" },
+                        { "title": "Stacks", "demoLink": "https://www.geeksforgeeks.org/dsa/stack-data-structure/" }
                     ]
                 }
             ],
@@ -69,7 +69,7 @@ export async function generatePersonalizedCourse(topics) {
     The output MUST be a valid JSON array, following this exact structure and format: ${jsonFormat}.
     Do not include any text, explanations, or markdown formatting like \`\`\`json before or after the JSON array.
     Do NOT include any quizzes or assessments. The path is for learning only.
-    Create 2-3 modules, each with 2-3 chapters. Each chapter should have 2-3 sub-topics.
+    Create 2-3 modules, each with 2-3 chapters. Each chapter should have 2-3 sub-topics Those subtopics should have a link to a valid page like gfg or w3schools for eg a react module would include link to react doc.
     The demoLink paths should be structured logically based on the module and chapter titles.
     `;
 

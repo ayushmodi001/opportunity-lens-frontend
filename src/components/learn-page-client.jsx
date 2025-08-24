@@ -71,7 +71,7 @@ export function LearnPageClient({ initialModules, userImage }) {
                                     <AccordionContent>
                                         <div className="flex flex-col gap-2 pl-4">
                                             {chapter.subTopics.map((subTopic, subTopicIndex) => (
-                                                <Link href={subTopic.demoLink || '#'} key={subTopicIndex} passHref>
+                                                <Link href={subTopic.demoLink || "#" } target="_blank" rel="noopener noreferrer"  key={subTopicIndex} passHref>
                                                     <Button variant="link" className="justify-start">
                                                         {subTopic.title}
                                                     </Button>
