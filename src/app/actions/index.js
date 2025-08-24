@@ -69,7 +69,7 @@ export async function generatePersonalizedCourse(topics) {
     The output MUST be a valid JSON array, following this exact structure and format: ${jsonFormat}.
     Do not include any text, explanations, or markdown formatting like \`\`\`json before or after the JSON array.
     Do NOT include any quizzes or assessments. The path is for learning only.
-    Create 2-3 modules, each with 2-3 chapters. Each chapter should have 2-3 sub-topics Those subtopics should have a link to a valid page like gfg or w3schools for eg a react module would include link to react doc.
+    Create 2-3 modules, each with 2-3 chapters. Each chapter should have 2-3 sub-topics Those subtopics should have a link to a valid page like gfg or w3schools for eg a react module would include link to react doc.please make sure the links are latest and new versions as they keep on changing in every few daysD
     The demoLink paths should be structured logically based on the module and chapter titles.
     `;
 
