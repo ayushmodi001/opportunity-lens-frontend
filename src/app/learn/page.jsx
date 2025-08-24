@@ -7,8 +7,9 @@ import Link from "next/link";
 import BlurIn from "@/components/animTxt";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
 
 export default async function page() {
     const session = await auth()
@@ -35,10 +36,14 @@ export default async function page() {
                                     <AccordionContent>
                                         <div className="flex flex-col gap-2 pl-4">
                                             {chapter.subTopics.map((subTopic, subTopicIndex) => (
-                                                <Link href={subTopic.demoLink} key={subTopicIndex} passHref>
-                                                    <Button variant="link" className="justify-start">
-                                                        {subTopic.title}
-                                                    </Button>
+                                                <Link
+                                                    href={subTopic.demoLink || "#"}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    key={subTopicIndex}
+                                                    className={cn(buttonVariants({ variant: "link", className: "justify-start" }))}
+                                                >
+                                                    {subTopic.title}
                                                 </Link>
                                             ))}
                                         </div>
