@@ -13,7 +13,7 @@
         "memory": 512
       },
       "src/app/**/*.js": {
-        "maxDuration": 30
+        "maxDuration": 40
       },
       "src/app/**/*.jsx": {
         "maxDuration": 30
