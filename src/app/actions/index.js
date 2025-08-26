@@ -71,7 +71,8 @@ export async function generatePersonalizedCourse(topics) {
     3. The output MUST be a valid JSON array, following this exact structure and format: ${jsonFormat}.
     4. Do not include any text, explanations, or markdown formatting like \`\`\`json before or after the JSON array.
     5. Do NOT include any quizzes or assessments. The path is for learning only.
-    6. Create 2-3 modules, each with 2-3 chapters. Each chapter should have 2-3 sub-topics Those subtopics should have a valid and latest link to a valid page like gfg or w3schools or any other like even javatpoint for eg a react module would include link to react doc.please make sure the links are latest and new versions as they keep on changing in every few days. make sure to not include legacy docs like here https://legacy.reactjs.org/docs/components-and-props.html. Please make sure the links are working and active as they may turn dead even in an hour sometimes   . 
+    6. Create 2-3 modules, each with 2-3 chapters. Each chapter should have 2-3 sub-topics Those subtopics should have a valid and latest link to a valid page like gfg or w3schools or any other like even javatpoint for eg a react module would include link to react doc.please make sure the links are latest and new versions as they keep on changing in every few days. make sure to not include legacy docs like here https://legacy.reactjs.org/docs/components-and-props.html. Please make sure the links are working and active as they may turn dead even in an hour sometimes.
+    7. In the end reorganize the modules and chapters based on one user should learn like a person selecting topics c++,python,c is incorrect path as you need to learn C first then c++ and then python so maintain such a sequence for modules and subchapters. 
     `;
 
     try {
@@ -79,7 +80,13 @@ export async function generatePersonalizedCourse(topics) {
         const response = await result.response;
         const text = response.text();
 
-        const learningPathData = JSON.parse(text);
+        let jsonString = text.replace(/```json|```/g, '').trim();
+        
+        if (jsonString.indexOf('[') > -1 && jsonString.lastIndexOf(']') > -1) {
+            jsonString = jsonString.substring(jsonString.indexOf('['), jsonString.lastIndexOf(']') + 1);
+        }
+
+        const learningPathData = JSON.parse(jsonString);
 
         await User.updateOne(
             { email: session.user.email },

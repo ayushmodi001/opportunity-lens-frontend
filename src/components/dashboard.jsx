@@ -150,7 +150,7 @@ export function Dashboard({ user, session, availableQuizzes, recentQuizzes, achi
                             </TabsContent>
                         </Tabs>
 
-                        <AIAssistant quizzes={recentQuizzes} />
+                        <AIAssistant quizzes={recentQuizzes} user={user} />
 
                         <Card>
                             <CardHeader>
