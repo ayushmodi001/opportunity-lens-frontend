@@ -1,19 +1,24 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sparkles } from 'lucide-react';
-import { getLearningSuggestions } from '@/app/actions';
+import { getLearningSuggestions, generatePersonalizedCourse } from '@/app/actions';
+import { toast } from "sonner";
 import Link from 'next/link';
 
-export function AIAssistant({ quizzes = [] }) {
+export function AIAssistant({ quizzes = [], user }) {
+    const router = useRouter();
     const [suggestions, setSuggestions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
     const [error, setError] = useState(null);
 
     const weakQuizzes = quizzes.filter(quiz => quiz.score < 75);
     const weakSkills = [...new Set(weakQuizzes.flatMap(quiz => quiz.skills))];
+    const hasLearningPath = user?.learningPath && user.learningPath.length > 0;
 
     const handleGetSuggestions = async () => {
         setIsLoading(true);
@@ -34,6 +39,24 @@ export function AIAssistant({ quizzes = [] }) {
         }
     };
 
+    const handleGeneratePath = async () => {
+        setIsGenerating(true);
+        toast.info("Generating your personalized learning path... This may take a moment.");
+
+        try {
+            const result = await generatePersonalizedCourse(weakSkills);
+            if (result?.success) {
+                toast.success("New learning path created! Redirecting...");
+                router.push('/learn');
+            } else {
+                throw new Error(result?.error || "An unknown error occurred.");
+            }
+        } catch (error) {
+            toast.error(`Failed to create learning path: ${error.message}`);
+            setIsGenerating(false);
+        }
+    };
+
     return (
         <Card>
             <CardHeader className="flex flex-row items-start justify-between gap-4">
@@ -43,14 +66,26 @@ export function AIAssistant({ quizzes = [] }) {
                         AI Learning Assistant
                     </CardTitle>
                     <CardDescription className="mt-2">
-                        Personalized course recommendations to improve weak areas.
+                        Get course recommendations or generate a new learning path.
                     </CardDescription>
                 </div>
-                {weakSkills.length > 0 && (
-                    <Button onClick={handleGetSuggestions} disabled={isLoading} size="sm" className="flex-shrink-0">
-                        {isLoading ? 'Analyzing...' : 'Get Suggestions'}
-                    </Button>
-                )}
+                <div className="flex gap-2 flex-shrink-0">
+                    {hasLearningPath && (
+                        <Link href="/learn">
+                            <Button variant="secondary" size="sm">View Path</Button>
+                        </Link>
+                    )}
+                    {weakSkills.length > 0 && (
+                        <>
+                            <Button onClick={handleGetSuggestions} disabled={isLoading || isGenerating} size="sm">
+                                {isLoading ? 'Analyzing...' : 'Get Suggestions'}
+                            </Button>
+                            <Button onClick={handleGeneratePath} disabled={isGenerating || isLoading} size="sm" variant="outline">
+                                {isGenerating ? 'Generating...' : 'Generate New Path'}
+                            </Button>
+                        </>
+                    )}
+                </div>
             </CardHeader>
             <CardContent>
                 {weakSkills.length === 0 && !isLoading && !error && suggestions.length === 0 && (
@@ -77,7 +112,7 @@ export function AIAssistant({ quizzes = [] }) {
                 {suggestions.length > 0 && (
                     <div className="mt-4">
                         <h4 className="font-semibold mb-2 text-sm">Recommended Courses:</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4">
                             {suggestions.map((course, index) => (
                                 <div key={index} className="p-3 rounded-lg border bg-background hover:bg-muted/50 transition-colors flex flex-col">
                                     <Link href={course.link} target="_blank" rel="noopener noreferrer" className="flex-grow">
