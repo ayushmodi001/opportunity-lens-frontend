@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Loader2 } from 'lucide-react';
 import { getLearningSuggestions, generatePersonalizedCourse } from '@/app/actions';
 import { toast } from "sonner";
 import Link from 'next/link';
@@ -14,6 +14,7 @@ export function AIAssistant({ quizzes = [], user }) {
     const [suggestions, setSuggestions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isViewingPath, setIsViewingPath] = useState(false);
     const [error, setError] = useState(null);
 
     const weakQuizzes = quizzes.filter(quiz => quiz.score < 75);
@@ -53,8 +54,14 @@ export function AIAssistant({ quizzes = [], user }) {
             }
         } catch (error) {
             toast.error(`Failed to create learning path: ${error.message}`);
+        } finally {
             setIsGenerating(false);
         }
+    };
+
+    const handleViewPath = () => {
+        setIsViewingPath(true);
+        router.push('/learn');
     };
 
     return (
@@ -71,17 +78,17 @@ export function AIAssistant({ quizzes = [], user }) {
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
                     {hasLearningPath && (
-                        <Link href="/learn">
-                            <Button variant="secondary" size="sm">View Path</Button>
-                        </Link>
+                        <Button onClick={handleViewPath} disabled={isViewingPath || isLoading || isGenerating} variant="secondary" size="sm">
+                            {isViewingPath ? <Loader2 className="animate-spin" /> : "View Path"}
+                        </Button>
                     )}
                     {weakSkills.length > 0 && (
                         <>
-                            <Button onClick={handleGetSuggestions} disabled={isLoading || isGenerating} size="sm">
-                                {isLoading ? 'Analyzing...' : 'Get Suggestions'}
+                            <Button onClick={handleGetSuggestions} disabled={isLoading || isGenerating || isViewingPath} size="sm">
+                                {isLoading ? <><Loader2 className="animate-spin" /> Analyzing...</> : 'Get Suggestions'}
                             </Button>
-                            <Button onClick={handleGeneratePath} disabled={isGenerating || isLoading} size="sm" variant="outline">
-                                {isGenerating ? 'Generating...' : 'Generate New Path'}
+                            <Button onClick={handleGeneratePath} disabled={isGenerating || isLoading || isViewingPath} size="sm" variant="outline">
+                                {isGenerating ? <><Loader2 className="animate-spin" /> Generating...</> : 'Generate New Path'}
                             </Button>
                         </>
                     )}
@@ -112,7 +119,7 @@ export function AIAssistant({ quizzes = [], user }) {
                 {suggestions.length > 0 && (
                     <div className="mt-4">
                         <h4 className="font-semibold mb-2 text-sm">Recommended Courses:</h4>
-                        <div className="grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {suggestions.map((course, index) => (
                                 <div key={index} className="p-3 rounded-lg border bg-background hover:bg-muted/50 transition-colors flex flex-col">
                                     <Link href={course.link} target="_blank" rel="noopener noreferrer" className="flex-grow">
