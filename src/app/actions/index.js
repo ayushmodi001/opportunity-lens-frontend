@@ -138,6 +138,11 @@ export async function doCredLogin(formData) {
 }
 
 export async function getLearningSuggestions(skills) {
+    if (!process.env.GEMINI_API_KEY) {
+        console.error("GEMINI_API_KEY is not set in the environment variables.");
+        return { error: "AI service is not configured. Missing API key." };
+    }
+
     if (!skills || skills.length === 0) {
         return { error: "No skills provided to get suggestions for." };
     }
@@ -207,6 +212,10 @@ export async function getLearningSuggestions(skills) {
         if (error.message.includes('API key not valid')) {
             return { error: "The AI service API key is not valid. Please check your configuration." };
         }
-        return { error: "Could not connect to the AI service. Please try again later." };
+        // Check for fetch-related errors which often indicate network issues.
+        if (error.message.includes('fetch failed')) {
+            return { error: "Could not connect to the AI service. Please check your network connection and firewall settings." };
+        }
+        return { error: "An unexpected error occurred while fetching suggestions. Please try again later." };
     }
 }

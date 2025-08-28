@@ -8,6 +8,13 @@ import { Sparkles, Loader2 } from 'lucide-react';
 import { getLearningSuggestions, generatePersonalizedCourse } from '@/app/actions';
 import { toast } from "sonner";
 import Link from 'next/link';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreVertical } from "lucide-react";
 
 export function AIAssistant({ quizzes = [], user }) {
     const router = useRouter();
@@ -76,22 +83,55 @@ export function AIAssistant({ quizzes = [], user }) {
                         Get course recommendations or generate a new learning path.
                     </CardDescription>
                 </div>
-                <div className="flex gap-2 flex-shrink-0">
-                    {hasLearningPath && (
-                        <Button onClick={handleViewPath} disabled={isViewingPath || isLoading || isGenerating} variant="secondary" size="sm">
-                            {isViewingPath ? <Loader2 className="animate-spin" /> : "View Path"}
-                        </Button>
-                    )}
-                    {weakSkills.length > 0 && (
-                        <>
-                            <Button onClick={handleGetSuggestions} disabled={isLoading || isGenerating || isViewingPath} size="sm">
-                                {isLoading ? <><Loader2 className="animate-spin" /> Analyzing...</> : 'Get Suggestions'}
+                <div className="flex-shrink-0">
+                    {/* Desktop View */}
+                    <div className="hidden md:flex gap-2">
+                        {hasLearningPath && (
+                            <Button onClick={handleViewPath} disabled={isViewingPath || isLoading || isGenerating} variant="secondary" size="sm">
+                                {isViewingPath ? <Loader2 className="animate-spin" /> : "View Path"}
                             </Button>
-                            <Button onClick={handleGeneratePath} disabled={isGenerating || isLoading || isViewingPath} size="sm" variant="outline">
-                                {isGenerating ? <><Loader2 className="animate-spin" /> Generating...</> : 'Generate New Path'}
-                            </Button>
-                        </>
-                    )}
+                        )}
+                        {weakSkills.length > 0 && (
+                            <>
+                                <Button onClick={handleGetSuggestions} disabled={isLoading || isGenerating || isViewingPath} size="sm">
+                                    {isLoading ? <><Loader2 className="animate-spin" /> Analyzing...</> : 'Get Suggestions'}
+                                </Button>
+                                <Button onClick={handleGeneratePath} disabled={isGenerating || isLoading || isViewingPath} size="sm" variant="outline">
+                                    {isGenerating ? <><Loader2 className="animate-spin" /> Generating...</> : 'Generate New Path'}
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                    {/* Mobile View */}
+                    <div className="md:hidden">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                    <MoreVertical className="h-5 w-5" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                {hasLearningPath && (
+                                    <DropdownMenuItem onClick={handleViewPath} disabled={isViewingPath || isLoading || isGenerating}>
+                                        {isViewingPath ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
+                                        View Path
+                                    </DropdownMenuItem>
+                                )}
+                                {weakSkills.length > 0 && (
+                                    <>
+                                        <DropdownMenuItem onClick={handleGetSuggestions} disabled={isLoading || isGenerating || isViewingPath}>
+                                            {isLoading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
+                                            Get Suggestions
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={handleGeneratePath} disabled={isGenerating || isLoading || isViewingPath}>
+                                            {isGenerating ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
+                                            Generate New Path
+                                        </DropdownMenuItem>
+                                    </>
+                                )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             </CardHeader>
             <CardContent>
